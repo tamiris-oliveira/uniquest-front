@@ -1,5 +1,5 @@
 :root {
-  --background: #ffffff;
+  --background: #F3F4F6;
   --foreground: #171717;
 }
 
@@ -16,13 +16,27 @@ body {
   overflow-x: hidden;
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+body:not(.auth-page) {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #f4f4f4;
 }
+
+body:not(.auth-page) main {
+  width: 80%;
+  max-height: 500px;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 20px;
+  overflow-y: auto;
+}
+
 
 * {
   box-sizing: border-box;
