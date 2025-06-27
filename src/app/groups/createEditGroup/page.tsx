@@ -19,42 +19,43 @@ const CreateEditGroup = () => {
   const [groupName, setGroupName] = useState("");
   const [selectedParticipants, setSelectedParticipants] = useState<string[]>([]);
   const [search, setSearch] = useState("");
-  const [participants, setParticipants] = useState<{ id: string; name: string; photo: string }[]>([]);
+  const [participants, setParticipants] = useState<{ id: string; name: string; avatar: string }[]>([]);
   const [inviteCode, setInviteCode] = useState("null");
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await axios.get(ApiRoutes.USERS, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setParticipants(response.data);
-      } catch (error) {
-        toast.error("Erro ao buscar usuários.");
-      }
-    };
-
     if (token) fetchUsers();
 
     if (token && groupId) {
-      const fetchGroup = async () => {
-        try {
-          const response = await axios.get(`${ApiRoutes.GROUPS}/${groupId}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-
-          const groupData = response.data;
-          setGroupName(groupData.name);
-          setInviteCode(groupData.invite_code);
-          setSelectedParticipants(groupData.users.map((u: any) => u.id));
-        } catch (error) {
-          toast.error("Erro ao carregar grupo.");
-        }
-      };
-
       fetchGroup();
     }
   }, [token, groupId]);
+
+  const fetchGroup = async () => {
+    try {
+      const response = await axios.get(`${ApiRoutes.GROUPS}/${groupId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const groupData = response.data;
+      setGroupName(groupData.name);
+      setInviteCode(groupData.invite_code);
+      setSelectedParticipants(groupData.users.map((u: any) => u.id));
+    } catch (error) {
+      toast.error("Erro ao carregar grupo.");
+    }
+  };
+
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get(ApiRoutes.USERS, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setParticipants(response.data);
+    } catch (error) {
+      toast.error("Erro ao buscar usuários.");
+    }
+  };
+
 
   const handleSelectParticipant = (id: string) => {
     if (!selectedParticipants.includes(id)) {
@@ -99,6 +100,9 @@ const CreateEditGroup = () => {
 
       setGroupName("");
       setSelectedParticipants([]);
+
+      fetchUsers();
+      fetchGroup();
     } catch (error) {
       toast.error("Erro ao salvar grupo.");
     }
@@ -121,7 +125,7 @@ const CreateEditGroup = () => {
           placeholder="Nome do grupo"
         />
         <Button onClick={handleSaveGroup}>
-          {groupId ? "Salvar alterações" : "Criar"}
+          {groupId ? "Salvar" : "Criar"}
         </Button>
       </div>
 
@@ -140,7 +144,7 @@ const CreateEditGroup = () => {
           const participant = participants.find((p) => p.id === id);
           return participant ? (
             <div key={participant.id} className="selected-card">
-              <img src={participant.photo} alt={participant.name} className="participant-photo" />
+              <img src={participant.avatar} alt={participant.name} className="participant-photo" />
               <span>{participant.name}</span>
               <button className="remove-button" onClick={() => handleRemoveParticipant(participant.id)}>
                 <X size={16} />
@@ -169,7 +173,7 @@ const CreateEditGroup = () => {
               className={`participant-card ${selectedParticipants.includes(participant.id) ? "selected" : ""}`}
               onClick={() => handleSelectParticipant(participant.id)}
             >
-              <img src={participant.photo} alt={participant.name} className="participant-photo" />
+              <img src={participant.avatar} alt={participant.name} className="participant-photo" />
               <span>{participant.name}</span>
             </div>
           ))}

@@ -5,6 +5,7 @@ export const ApiRoutes = {
 
   USERS: `${BASE_URL}/users`,
   USER: (id) => `${BASE_URL}/users/${id}`,
+  PROFILE: `${BASE_URL}/profile`,
 
   GROUPS: `${BASE_URL}/groups`,
   ADD_USER_TO_GROUP: (id) => `${BASE_URL}/groups/${id}/add_user`,

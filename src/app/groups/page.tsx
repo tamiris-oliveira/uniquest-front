@@ -7,6 +7,7 @@ import Filter from "@/components/main/filter";
 import Card from "@/components/main/card";
 import Link from "next/link";
 import Button from "@/components/main/button";
+import { ConfirmToast } from "@/components/main/confirmToast";
 import "./page.css";
 import axios from "axios";
 import ApiRoutes from "@/services/constants";
@@ -44,11 +45,37 @@ const Groups = () => {
     }
   };
 
+   const handleEdit = (id: number) => {
+    window.location.href = `/groups/createEditGroup?edit=true&id=${id}`;
+  };
+
+  const handleDelete = (id: number) => {
+    ConfirmToast({
+      message: "Tem certeza que deseja excluir o grupo?",
+      onConfirm: async () => {
+        try {
+          await axios.delete(`${ApiRoutes.GROUPS}/${id}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          toast.success("Grupo excluído com sucesso!");
+          getGroups(filters);
+        } catch {
+          toast.error("Erro ao excluir grupo.");
+        }
+      },
+    });
+  };
+
+
+  useEffect(() => {
+    if (token) getGroups(filters);
+  }, [token]);
+
   const handleClickOutside = (selectedFilters: { [key: string]: string }) => {
     const keyMapping: { [key: string]: string } = {
       "Nome": "name",
       "Código": "invite_code",
-      "Data de criação": "created_at",
+      "Data de Criação": "created_at",
     };
   
     const desformattedFilters = Object.entries(selectedFilters).reduce((acc, [key, value]) => {
@@ -60,16 +87,20 @@ const Groups = () => {
     setFilters(desformattedFilters);  
   };
   
-
   return (
     <div>
       <div className="button-container">
         <Link href="./groups/createEditGroup">
-          <Button />
+          <Button > Criar Novo Grupo</Button>
         </Link>
       </div>
       <Filter groups={groups} onClickOutside={handleClickOutside} />
-      <Card items={groups} route="groups"/>
+      <Card
+      items={groups}
+      route="groups"
+      onEdit={handleEdit}
+      onDelete={handleDelete}
+    />
     </div>
   );
 };

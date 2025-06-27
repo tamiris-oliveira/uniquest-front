@@ -2,7 +2,8 @@
   display: flex;
   width: 100%;
   justify-content: space-between;
-  margin: 12px 0;
+  margin: 12px 0 20px 0; 
+  gap: 8px; 
 }
 
 .create-group-container input {
@@ -12,11 +13,10 @@
   background-color: #F3F4F6;
   border-radius: 5px;
   margin-right: 8px;
-  
 }
 
 .input-button-container input {
-  width: 100%; 
+  width: 100%;
   padding: 14px 24px;
   border-radius: 5px;
   background-color: #F3F4F6;
@@ -24,11 +24,18 @@
   margin-right: 8px;
 }
 
+.input-button-container p{
+  font-weight: 600;
+  margin-bottom: 8px; 
+  display: block;
+}
+
 .selected-participants {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 12px;
+  gap: 12px; 
+  margin-bottom: 16px;
+  margin-top: 12px;
 }
 
 .selected-card {
@@ -38,7 +45,7 @@
   padding: 6px 10px;
   border-radius: 20px;
   font-size: 14px;
-  margin: 12px 0;
+  margin: 0; 
 }
 
 .selected-card img {
@@ -60,11 +67,12 @@
   max-height: 300px;
   overflow-y: auto;
   border-top: 1px solid #ddd;
-  padding-top: 8px;
+  padding-top: 12px; 
+  margin-bottom: 20px;
 }
 
 .group-section h3 {
-  margin: 8px 0;
+  margin: 12px 0 16px 0;
   font-size: 14px;
   color: #666;
 }
@@ -76,7 +84,7 @@
   cursor: pointer;
   border-radius: 8px;
   transition: background 0.3s;
-  margin: 12px 0;
+  margin: 8px 0; 
 }
 
 .participant-card:hover {
@@ -97,19 +105,20 @@
 .invite-code-container {
   display: flex;
   align-items: center;
-  gap: 8px; /* Espaço entre o texto e o botão */
+  gap: 8px;
   background: #F3F4F6;
   padding: 8px 12px;
   border-radius: 6px;
   font-size: 14px;
   color: #1E3A8A;
   width: fit-content;
+  margin-bottom: 16px; 
 }
 
 .copy-button {
   display: flex;
   align-items: center;
-  gap: 6px; 
+  gap: 6px;
   padding: 6px 10px;
   background: #E0F2FE;
   color: #1E40AF;

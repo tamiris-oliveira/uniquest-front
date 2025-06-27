@@ -1,98 +1,190 @@
 "use client";
-import React, { useState } from "react";
-import "./page.css";
+import React, { useEffect, useState } from "react";
+import withAuth from "@/context/withAuth";
+import axios from "axios";
+import { useAuth } from "@/context/authContext";
 import Button from "@/components/main/button";
-import { Plus, Edit, Trash2 } from "lucide-react";
+import { ApiRoutes } from "@/services/constants";
+import { toast } from "react-toastify";
+import { useSearchParams } from "next/navigation";
+import { Simulation, SimulationPayload } from "@/types/simulation";
+import "react-toastify/dist/ReactToastify.css";
+import "./page.css";
 
-const CreateEditSimulation = () => {
-  const [simulationName, setSimulationName] = useState("");
-  const [search, setSearch] = useState("");
+interface Group {
+  id: number;
+  name: string;
+}
 
-  const questions = [
-    {
-      id: "1",
-      question: "Qual é a capital da França?",
-      options: ["Londres", "Paris", "Berlim", "Madri"],
-      correctAnswer: "Paris",
-      justification: "Paris é a capital da França."
-    },
-    {
-      id: "2",
-      question: "Qual é o maior planeta do sistema solar?",
-      options: ["Terra", "Marte", "Júpiter", "Vênus"],
-      correctAnswer: "Júpiter",
-      justification: "Júpiter é o maior planeta do sistema solar."
-    },
-    {
-      id: "3",
-      question: "Quem desenvolveu a teoria da relatividade?",
-      options: ["Isaac Newton", "Albert Einstein", "Nikola Tesla", "Galileu Galilei"],
-      correctAnswer: "Albert Einstein",
-      justification: "Albert Einstein desenvolveu a teoria da relatividade."
+const CreateEditSimulation: React.FC = () => {
+  const { user, token } = useAuth();
+  const searchParams = useSearchParams();
+  const simulationId = searchParams.get("id");
+
+  const [simulationName, setSimulationName] = useState<string>("");
+  const [simulationDescription, setSimulationDescription] = useState<string>("");
+  const [deadline, setDeadline] = useState<string>("");
+  const [groups, setGroups] = useState<Group[]>([]);
+  const [selectedGroupIds, setSelectedGroupIds] = useState<number[]>([]);
+
+  useEffect(() => {
+    if (token) {
+      fetchGroups();
+      if (simulationId) fetchSimulation();
     }
-  ];
+  }, [token, simulationId]);
+
+  const fetchGroups = async () => {
+    try {
+      const { data } = await axios.get<Group[]>(ApiRoutes.GROUPS, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setGroups(data);
+    } catch {
+      toast.error("Erro ao buscar grupos.");
+    }
+  };
+
+  const fetchSimulation = async () => {
+    try {
+      const { data } = await axios.get<Simulation>(
+        `${ApiRoutes.SIMULATION}/${simulationId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setSimulationName(data.title);
+      setSimulationDescription(data.description);
+      setDeadline(data.deadline);
+      setSelectedGroupIds(data.group_id || []);
+    } catch {
+      toast.error("Erro ao carregar simulação.");
+    }
+  };
+
+  const handleGroupChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const options = Array.from(e.target.selectedOptions);
+    const ids = options.map(o => Number(o.value));
+    setSelectedGroupIds(ids);
+  };
+
+  const handleSaveSimulation = async () => {
+    if (!simulationName.trim()) {
+      toast.warn("Por favor, insira um nome para o simulado.");
+      return;
+    }
+
+    const payload: SimulationPayload = {
+      simulation: {
+        title: simulationName,
+        description: simulationDescription,
+        creation_date: new Date().toISOString(),
+        deadline,
+        user_id: user!.id,
+        group_id: selectedGroupIds,
+      },
+    };
+
+    try {
+      if (simulationId) {
+        await axios.put(
+          `${ApiRoutes.SIMULATION}/${simulationId}`,
+          payload,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        toast.success("Simulado atualizado com sucesso!");
+      } else {
+        await axios.post(
+          ApiRoutes.SIMULATIONS,
+          payload,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        toast.success("Simulado criado com sucesso!");
+      }
+      setSimulationName("");
+      setSimulationDescription("");
+      setDeadline("");
+      setSelectedGroupIds([]);
+    } catch {
+      toast.error("Erro ao salvar simulado.");
+    }
+  };
+
+  const handleRemoveGroup = (id: number) => {
+  setSelectedGroupIds(prev => prev.filter(gid => gid !== id));
+};
+
 
   return (
-    <div className="create-simulation-container">
-      <label htmlFor="simulation-name">Digite o nome do simulado:</label>
+    <div className="create-group-container">
+      <label htmlFor="simulation-name">Nome do Simulado:</label>
       <div className="input-button-container">
         <input
-          type="text"
           id="simulation-name"
+          type="text"
           value={simulationName}
-          onChange={(e) => setSimulationName(e.target.value)}
+          onChange={e => setSimulationName(e.target.value)}
           placeholder="Nome do simulado"
         />
-        <Button />
+        <Button onClick={handleSaveSimulation}>
+          {simulationId ? "Salvar" : "Criar"}
+        </Button>
       </div>
 
-      <div className="header-container">
-        <p>Questões:</p>
-        <button className="add-button">
-          <Plus size={20} />
-        </button>
-      </div>
-
+      <label htmlFor="simulation-description">Descrição:</label>
       <div className="input-button-container">
         <input
+          id="simulation-description"
           type="text"
-          placeholder="Filtrar questões"
-          onChange={(e) => setSearch(e.target.value.toLowerCase())}
+          value={simulationDescription}
+          onChange={e => setSimulationDescription(e.target.value)}
+          placeholder="Descrição do simulado"
         />
       </div>
 
-      <div className="questions-list">
-        {questions
-          .filter(q => q.question.toLowerCase().includes(search))
-          .map((q) => (
-            <div key={q.id} className="question-card">
-              <div className="question-header">
-                <h3>{q.question}</h3>
-                <div className="actions">
-                  <button className="edit-button">
-                    <Edit size={18} />
-                  </button>
-                  <button className="delete-button">
-                    <Trash2 size={18} />
-                  </button>
-                </div>
-              </div>
-              <ul>
-                {q.options.map((option, index) => (
-                  <li 
-                    key={index} 
-                    className={`option ${option === q.correctAnswer ? "correct" : ""}`}
-                  >
-                    {option}
-                  </li>
-                ))}
-              </ul>
-              <p className="justification"><strong>Justificativa:</strong> {q.justification}</p>
-            </div>
-          ))}
+      <label htmlFor="simulation-deadline">Data de Vencimento:</label>
+      <div className="input-button-container">
+        <input
+          id="simulation-deadline"
+          type="datetime-local"
+          value={deadline}
+          onChange={e => setDeadline(e.target.value)}
+          placeholder="Selecione data e hora"
+        />
       </div>
+
+      <label htmlFor="groups-select">Selecione os grupos:</label>
+      <div className="input-button-container">
+      <select
+        id="groups-select"
+        multiple
+        value={selectedGroupIds.map(String)}
+        onChange={handleGroupChange}
+      >
+        {groups.map((g) => (
+          <option key={g.id} value={g.id}>
+            {g.name}
+          </option>
+        ))}
+      </select>
+      </div>
+
+      {selectedGroupIds.length > 0 && (
+  <div className="selected-groups">
+    {selectedGroupIds.map((id) => {
+      const group = groups.find((g) => g.id === id);
+      if (!group) return null;
+      return (
+        <div key={id} className="selected-group-tag">
+          <span>{group.name}</span>
+          <button type="button" onClick={() => handleRemoveGroup(id)}>×</button>
+        </div>
+      );
+    })}
+  </div>
+)}
+
+
     </div>
   );
 };
 
-export default CreateEditSimulation;
+export default withAuth(CreateEditSimulation);

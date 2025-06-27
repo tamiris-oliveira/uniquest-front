@@ -9,7 +9,7 @@ interface User {
   name: string;
   email: string;
   role: number;
-  photo?: string;
+  avatar?: string;
   created_at?: string;
 }
 
@@ -18,6 +18,7 @@ interface AuthContextType {
   token: string | null;
   login: (userData: User, token: string) => void;
   logout: () => void;
+  updateUserData: (newData: Partial<User>) => void; 
   isAuthenticated: boolean;
   isLoading: boolean;
 }
@@ -28,7 +29,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(true); // <- Adicionado
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
@@ -52,7 +53,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         localStorage.removeItem('user');
       }
     }
-    setIsLoading(false); // <- Finaliza o carregamento
+    setIsLoading(false);
   }, []);
 
   const login = (userData: User, token: string) => {
@@ -78,9 +79,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     router.push('/login');
   };
 
+  const updateUserData = (newData: Partial<User>) => {
+    if (user) {
+      const updatedUser = { ...user, ...newData };
+      setUser(updatedUser);
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+    }
+  };
+
   return (
     <AuthContext.Provider
-      value={{ user, token, login, logout, isAuthenticated, isLoading }}
+      value={{ user, token, login, logout, updateUserData, isAuthenticated, isLoading }}
     >
       {children}
     </AuthContext.Provider>

@@ -1,28 +1,28 @@
 .button-container {
-    display: flex;
-    justify-content: flex-end;
-    width: 100%;
-    margin-top: auto;
-  }
-  
-  .create-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px; 
-    padding: 14px 24px;
-    background: #D1FAE5;
-    color: #1E3A8A;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: medium;
-    line-height: 1.5;
-  }
-  
-  .create-button:hover {
-    background: #1E3A8A;
-    color: #D1FAE5;
-  }
-  
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  margin-top: auto;
+}
+
+.create-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px; 
+  padding: 14px 24px;
+  background: #D1FAE5;
+  color: #1E3A8A;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: medium;
+  line-height: 1.5;
+  transition: background 0.3s, color 0.3s;
+}
+
+.create-button:hover {
+  background: #1E3A8A;
+  color: #D1FAE5;
+}
