@@ -12,8 +12,10 @@ export const ApiRoutes = {
 
   SIMULATIONS: `${BASE_URL}/simulations`,
   SIMULATION: (id) => `${BASE_URL}/simulations/${id}`,
-  QUESTIONS: (simulationId) => `${BASE_URL}/simulations/${simulationId}/questions`,
+  SIMULATION_GROUPS: (simulationId) => `${BASE_URL}/simulations/${simulationId}/groups`,
+  ASSIGN_GROUPS_TO_SIMULATION: (simulationId) => `${BASE_URL}/simulations/${simulationId}/assign_groups`,
 
+  QUESTIONS: `${BASE_URL}/questions`,
   QUESTION: (id) => `${BASE_URL}/questions/${id}`,
   ALTERNATIVES: (questionId) => `${BASE_URL}/questions/${questionId}/alternatives`,
 
@@ -23,7 +25,8 @@ export const ApiRoutes = {
   CORRECTIONS: (answerId) => `${BASE_URL}/answers/${answerId}/corrections`,
 
   NOTIFICATIONS: `${BASE_URL}/notifications`,
-  REPORTS: `${BASE_URL}/reports`
+  REPORTS: `${BASE_URL}/reports`,
+  SUBJECTS: `${BASE_URL}/subjects`,
 };
 
 export default ApiRoutes;

@@ -7,7 +7,9 @@ import Button from "@/components/main/button";
 import { ApiRoutes } from "@/services/constants";
 import { toast } from "react-toastify";
 import { useSearchParams } from "next/navigation";
-import { Simulation, SimulationPayload } from "@/types/simulation";
+import { Simulation, SimulationPayload } from "@/types/types";
+import Select from "react-select";
+import { format, parseISO } from "date-fns";
 import "react-toastify/dist/ReactToastify.css";
 import "./page.css";
 
@@ -20,12 +22,13 @@ const CreateEditSimulation: React.FC = () => {
   const { user, token } = useAuth();
   const searchParams = useSearchParams();
   const simulationId = searchParams.get("id");
-
   const [simulationName, setSimulationName] = useState<string>("");
   const [simulationDescription, setSimulationDescription] = useState<string>("");
   const [deadline, setDeadline] = useState<string>("");
   const [groups, setGroups] = useState<Group[]>([]);
   const [selectedGroupIds, setSelectedGroupIds] = useState<number[]>([]);
+  const groupOptions = groups.map(g => ({ value: g.id, label: g.name }));
+  
 
   useEffect(() => {
     if (token) {
@@ -46,25 +49,22 @@ const CreateEditSimulation: React.FC = () => {
   };
 
   const fetchSimulation = async () => {
-    try {
-      const { data } = await axios.get<Simulation>(
-        `${ApiRoutes.SIMULATION}/${simulationId}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setSimulationName(data.title);
-      setSimulationDescription(data.description);
-      setDeadline(data.deadline);
-      setSelectedGroupIds(data.group_id || []);
-    } catch {
-      toast.error("Erro ao carregar simulação.");
-    }
-  };
+  try {
+    const { data } = await axios.get<Simulation>(
+      ApiRoutes.SIMULATION(simulationId),
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
 
-  const handleGroupChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const options = Array.from(e.target.selectedOptions);
-    const ids = options.map(o => Number(o.value));
-    setSelectedGroupIds(ids);
-  };
+    setSimulationName(data.title);
+    setSimulationDescription(data.description);
+    setDeadline(data.deadline); 
+
+    const groupIds = data.groups ? data.groups.map(group => group.id) : [];
+    setSelectedGroupIds(groupIds);
+  } catch {
+    toast.error("Erro ao carregar simulação.");
+  }
+};
 
   const handleSaveSimulation = async () => {
     if (!simulationName.trim()) {
@@ -77,19 +77,20 @@ const CreateEditSimulation: React.FC = () => {
         title: simulationName,
         description: simulationDescription,
         creation_date: new Date().toISOString(),
-        deadline,
+        deadline: new Date(deadline).toISOString(),
         user_id: user!.id,
-        group_id: selectedGroupIds,
+        group_ids: selectedGroupIds,
       },
     };
 
     try {
       if (simulationId) {
-        await axios.put(
-          `${ApiRoutes.SIMULATION}/${simulationId}`,
+        await axios.put<Simulation>(
+                        ApiRoutes.SIMULATION(simulationId),
           payload,
           { headers: { Authorization: `Bearer ${token}` } }
         );
+        console.log("Payload:", payload);
         toast.success("Simulado atualizado com sucesso!");
       } else {
         await axios.post(
@@ -103,15 +104,19 @@ const CreateEditSimulation: React.FC = () => {
       setSimulationDescription("");
       setDeadline("");
       setSelectedGroupIds([]);
+      fetchGroups();
+      fetchSimulation();
     } catch {
       toast.error("Erro ao salvar simulado.");
     }
   };
 
-  const handleRemoveGroup = (id: number) => {
-  setSelectedGroupIds(prev => prev.filter(gid => gid !== id));
-};
-
+  function toInputDateTimeValue(isoString: string): string {
+    if (!isoString) return "";
+    console.log("ISO String:", isoString);
+    const date = parseISO(isoString); 
+    return format(date, "yyyy-MM-dd'T'HH:mm");
+  }
 
   return (
     <div className="create-group-container">
@@ -145,44 +150,28 @@ const CreateEditSimulation: React.FC = () => {
         <input
           id="simulation-deadline"
           type="datetime-local"
-          value={deadline}
-          onChange={e => setDeadline(e.target.value)}
+          value={toInputDateTimeValue(deadline)}
+          onChange={e => {
+            const iso = new Date(e.target.value).toISOString();
+            setDeadline(iso);
+          }}
           placeholder="Selecione data e hora"
         />
+
+
       </div>
 
       <label htmlFor="groups-select">Selecione os grupos:</label>
       <div className="input-button-container">
-      <select
-        id="groups-select"
-        multiple
-        value={selectedGroupIds.map(String)}
-        onChange={handleGroupChange}
-      >
-        {groups.map((g) => (
-          <option key={g.id} value={g.id}>
-            {g.name}
-          </option>
-        ))}
-      </select>
+        <Select
+        isMulti
+        options={groupOptions}
+        value={groupOptions.filter(opt => selectedGroupIds.includes(opt.value))}
+        onChange={opts => setSelectedGroupIds(opts.map(opt => opt.value))}
+        classNamePrefix="custom-select"
+        className="react-select-container"
+        />
       </div>
-
-      {selectedGroupIds.length > 0 && (
-  <div className="selected-groups">
-    {selectedGroupIds.map((id) => {
-      const group = groups.find((g) => g.id === id);
-      if (!group) return null;
-      return (
-        <div key={id} className="selected-group-tag">
-          <span>{group.name}</span>
-          <button type="button" onClick={() => handleRemoveGroup(id)}>×</button>
-        </div>
-      );
-    })}
-  </div>
-)}
-
-
     </div>
   );
 };

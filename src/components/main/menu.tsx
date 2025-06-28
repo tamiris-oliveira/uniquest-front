@@ -59,6 +59,7 @@ const Menu = () => {
                     <li><Link href="/" onClick={closeMenu}>Home</Link></li>
                     <li><Link href="/groups" onClick={closeMenu}>Grupos</Link></li>
                     <li><Link href="/simulations" onClick={closeMenu}>Simulados</Link></li>
+                    <li><Link href="/questions" onClick={closeMenu}>Questões</Link></li>
                     <li><Link href="/contact" onClick={closeMenu}>Contato</Link></li>
                 </ul>
             </div>

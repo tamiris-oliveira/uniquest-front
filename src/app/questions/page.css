@@ -1,0 +1,16 @@
+.input-button-container {
+    display: flex;
+    width: 100%;
+    justify-content: space-between; 
+    margin: 12px 0 20px 0;
+    gap: 8px;
+
+}
+
+.remove-button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: red;
+  margin-left: 8px;
+}

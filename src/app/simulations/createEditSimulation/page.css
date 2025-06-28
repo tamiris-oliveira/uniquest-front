@@ -179,3 +179,70 @@
   cursor: pointer;
 }
 
+.react-select-container {
+  width: 100%;
+}
+
+.custom-select__control {
+  background-color: #F3F4F6;
+  border: 1px solid #F3F4F6;
+  border-radius: 5px;
+  min-height: 56px;
+  font-size: 14px;
+  padding: 2px 4px;
+  color: #111827;
+  box-shadow: none;
+  transition: border-color 0.2s ease;
+}
+
+.custom-select__control--is-focused {
+  border-color: #1E40AF;
+  box-shadow: 0 0 0 1px #1E40AF;
+}
+
+.custom-select__value-container {
+  padding: 2px 8px;
+}
+
+.custom-select__multi-value {
+  background-color: #E0F2FE;
+  border-radius: 20px;
+  padding: 2px 6px;
+}
+
+.custom-select__multi-value__label {
+  color: #1E40AF;
+  font-weight: 500;
+  padding: 0 4px;
+}
+
+.custom-select__multi-value__remove {
+  color: #1E40AF;
+  cursor: pointer;
+  padding: 0 6px;
+}
+
+.custom-select__multi-value__remove:hover {
+  background-color: transparent;
+  color: #DC2626; /* vermelho ao passar o mouse */
+}
+
+.custom-select__menu {
+  z-index: 9999;
+}
+
+.custom-select__option {
+  font-size: 14px;
+  padding: 10px 12px;
+  cursor: pointer;
+}
+
+.custom-select__option--is-focused {
+  background-color: #E0F2FE;
+  color: #111827;
+}
+
+.custom-select__option--is-selected {
+  background-color: #1E40AF;
+  color: white;
+}

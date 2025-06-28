@@ -13,6 +13,7 @@ import axios from "axios";
 import ApiRoutes from "@/services/constants";
 import { toast } from "react-toastify";
 import { format } from "date-fns"; 
+import { Simulation } from "@/types/types";
 
 const Simulations = () => {
   const { user, isAuthenticated, token } = useAuth();
@@ -54,7 +55,8 @@ const Simulations = () => {
       message: "Tem certeza que deseja excluir o simulado?",
       onConfirm: async () => {
         try {
-          await axios.delete(`${ApiRoutes.SIMULATION}/${id}`, {
+          await axios.delete<Simulation>(
+                ApiRoutes.SIMULATION(id), {
             headers: { Authorization: `Bearer ${token}` },
           });
           toast.success("Simulado excluído com sucesso!");
@@ -97,7 +99,7 @@ const Simulations = () => {
       <Filter groups={simulations} onClickOutside={handleClickOutside} />
       <Card
       items={simulations}
-      route="gimulations"
+      route="simulations"
       onEdit={handleEdit}
       onDelete={handleDelete}
     />
