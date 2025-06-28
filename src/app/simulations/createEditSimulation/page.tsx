@@ -7,9 +7,10 @@ import Button from "@/components/main/button";
 import { ApiRoutes } from "@/services/constants";
 import { toast } from "react-toastify";
 import { useSearchParams } from "next/navigation";
-import { Simulation, SimulationPayload } from "@/types/types";
+import { Simulation, SimulationPayload, Alternative } from "@/types/types";
 import Select from "react-select";
-import { format, parseISO } from "date-fns";
+import { format, parseISO, set } from "date-fns";
+import QuestionSelectModal from "@/components/main/questionSelectModal";
 import "react-toastify/dist/ReactToastify.css";
 import "./page.css";
 
@@ -27,6 +28,9 @@ const CreateEditSimulation: React.FC = () => {
   const [deadline, setDeadline] = useState<string>("");
   const [groups, setGroups] = useState<Group[]>([]);
   const [selectedGroupIds, setSelectedGroupIds] = useState<number[]>([]);
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [selectedQuestionIds, setSelectedQuestionIds] = useState<number[]>([]);
+  const [questions, setQuestions] = useState<Simulation["questions"]>([]);
   const groupOptions = groups.map(g => ({ value: g.id, label: g.name }));
   
 
@@ -61,12 +65,15 @@ const CreateEditSimulation: React.FC = () => {
 
     const groupIds = data.groups ? data.groups.map(group => group.id) : [];
     setSelectedGroupIds(groupIds);
+
+    setQuestions(data.questions || []);
+    setSelectedQuestionIds(data.questions ? data.questions.map(q => q.id) : []);
   } catch {
     toast.error("Erro ao carregar simulação.");
   }
 };
 
-  const handleSaveSimulation = async () => {
+  const handleSaveSimulation = async (ids: number[]) => {
     if (!simulationName.trim()) {
       toast.warn("Por favor, insira um nome para o simulado.");
       return;
@@ -80,6 +87,7 @@ const CreateEditSimulation: React.FC = () => {
         deadline: new Date(deadline).toISOString(),
         user_id: user!.id,
         group_ids: selectedGroupIds,
+        question_ids: ids,
       },
     };
 
@@ -118,6 +126,12 @@ const CreateEditSimulation: React.FC = () => {
     return format(date, "yyyy-MM-dd'T'HH:mm");
   }
 
+  const handleSelectQuestionsAndSave = (ids: number[]) => {
+  setSelectedQuestionIds(ids);
+  handleSaveSimulation(ids);
+  };
+
+
   return (
     <div className="create-group-container">
       <label htmlFor="simulation-name">Nome do Simulado:</label>
@@ -129,7 +143,7 @@ const CreateEditSimulation: React.FC = () => {
           onChange={e => setSimulationName(e.target.value)}
           placeholder="Nome do simulado"
         />
-        <Button onClick={handleSaveSimulation}>
+        <Button onClick={() => handleSaveSimulation(selectedQuestionIds)}>
           {simulationId ? "Salvar" : "Criar"}
         </Button>
       </div>
@@ -172,6 +186,45 @@ const CreateEditSimulation: React.FC = () => {
         className="react-select-container"
         />
       </div>
+        <div className="input-button-container question-select-container">
+        <p>Selecionar questões:</p>
+
+        <div className="question-select-wrapper">
+          <Button onClick={() => setModalOpen(true)}/>
+          <p className="question-count">
+            {selectedQuestionIds.length} questão(ões) selecionada(s)
+          </p>
+        </div>
+      </div>
+
+      {questions.map((question) => (
+          <div key={question.id} className="question-card">
+            <p><strong>Tipo:</strong> {question.question_type}</p>
+            <p><strong>Enunciado:</strong> {question.statement}</p>
+            {question.alternatives && question.alternatives.length > 0 && (
+              <div className="alternatives-container">
+                <strong>Alternativas:</strong>
+                {question.alternatives.map((alt: Alternative) => (
+                  <div
+                    key={alt.id}
+                    className={`alternative ${alt.correct ? "correct" : ""}`}
+                  >
+                    {alt.text}
+                  </div>
+                ))}
+              </div>
+            )}
+            <p><strong>Justificativa:</strong> {question.justification || "-"}</p>
+          </div>
+        ))}
+
+      <QuestionSelectModal
+      isOpen={isModalOpen}
+      onClose={() => setModalOpen(false)}
+      onSave={handleSelectQuestionsAndSave}
+      token={token!}
+      selectedQuestionIds={selectedQuestionIds}
+    />
     </div>
   );
 };

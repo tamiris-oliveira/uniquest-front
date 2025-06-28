@@ -1,8 +1,106 @@
 .input-button-container {
-    display: flex;
-    width: 100%;
-    justify-content: space-between; 
-    margin: 12px 0 20px 0;
-    gap: 8px;
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  margin: 12px 0 20px 0;
+  gap: 8px;
+  flex-wrap: wrap;
+}
 
+.create-group-container input,
+.create-group-container textarea,
+.create-group-container select {
+  flex-grow: 1;
+  padding: 14px 24px;
+  border: 1px solid #F3F4F6;
+  background-color: #F3F4F6;
+  border-radius: 5px;
+  font-size: 14px;
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 16px; /* espaçamento entre campos */
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  color: #111827;
+}
+
+/* Textarea com altura mínima */
+.create-group-container textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Efeito visual ao focar nos campos */
+.create-group-container input:focus,
+.create-group-container textarea:focus,
+.create-group-container select:focus {
+  outline: none;
+  border-color: #1E40AF;
+  box-shadow: 0 0 0 1px #1E40AF;
+  background-color: white;
+}
+
+.alternative-line {
+  display: flex;
+  align-items: center; /* Alinha tudo no centro vertical */
+  gap: 12px;
+  margin-bottom: 12px;
+  width: 100%;
+}
+
+/* Input */
+.alternative-line input[type="text"] {
+  flex-grow: 1;
+  padding: 12px 16px;
+  border: 1px solid #F3F4F6;
+  background-color: #F3F4F6;
+  border-radius: 5px;
+  font-size: 14px;
+  line-height: 1.5;
+  box-sizing: border-box;
+  color: #111827;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Botão de "correta" */
+.correct-toggle-button {
+  display: flex;
+  align-items: center; /* Alinha o ícone e texto */
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  border-radius: 5px;
+  background: transparent;
+  cursor: pointer;
+  color: #6B7280;
+  transition: color 0.2s ease;
+}
+
+.correct-toggle-button.correct {
+  color: #10B981;
+}
+
+.correct-toggle-button:hover {
+  color: #059669;
+}
+
+/* Botão de lixeira */
+.trash-icon-button {
+  background: transparent;
+  border: none;
+  padding: 6px;
+  cursor: pointer;
+  color: #DC2626;
+  display: flex;
+  align-items: center; /* Centraliza o ícone */
+  justify-content: center;
+  transition: color 0.2s ease, background-color 0.2s ease;
+  border-radius: 4px;
+}
+
+.trash-icon-button:hover {
+  color: #B91C1C;
+  background-color: #FEE2E2;
 }

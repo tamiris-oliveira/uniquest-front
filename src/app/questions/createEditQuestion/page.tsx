@@ -7,18 +7,10 @@ import Button from "@/components/main/button";
 import { ApiRoutes } from "@/services/constants";
 import { toast } from "react-toastify";
 import { Question } from "@/types/types";
+import { Trash2, CheckCircle, Circle } from "lucide-react";
+import { Alternative, questionTypes } from "@/types/types";
 import "react-toastify/dist/ReactToastify.css";
-
-interface Alternative {
-  id?: number;
-  text: string;
-  correct: boolean;
-}
-
-const questionTypes = [
-  { value: "Objetiva", label: "Múltipla escolha" },
-  { value: "Discursiva", label: "Dissertativa" },
-];
+import "./page.css";
 
 const CreateEditQuestion: React.FC = () => {
   const { user, token } = useAuth();
@@ -116,6 +108,8 @@ const CreateEditQuestion: React.FC = () => {
 
 let finalSubjectId = subjectId;
 
+console.log("Final Subject ID:", subjectId);
+
 if (!subjectId && newSubjectName.trim()) {
   try {
     const { data } = await axios.post(
@@ -129,7 +123,6 @@ if (!subjectId && newSubjectName.trim()) {
     return;
   }
 }
-
 
     const payload = {
       question: {
@@ -165,7 +158,12 @@ if (!subjectId && newSubjectName.trim()) {
 
   return (
     <div className="create-group-container">
-      <h2>{questionId ? "Editar Questão" : "Criar Questão"}</h2>
+      <div className="input-button-container">
+      <h2 style={{ margin: 0 }}>{questionId ? "Editar Questão" : "Criar Questão"}</h2>
+      <Button onClick={handleSave} disabled={loading}>
+          {loading ? (questionId ? "Salvando..." : "Criando...") : questionId ? "Salvar" : "Criar"}
+        </Button>
+    </div>
 
       <label htmlFor="subject" style={{ marginTop: 12 }}>
   Matéria:
@@ -194,6 +192,7 @@ if (!subjectId && newSubjectName.trim()) {
   value={newSubjectName}
   onChange={(e) => setNewSubjectName(e.target.value)}
   style={{ width: "100%", padding: 10, borderRadius: 5, border: "1px solid #ccc" }}
+  disabled={!!subjectId} 
 />
 
 
@@ -237,7 +236,10 @@ if (!subjectId && newSubjectName.trim()) {
 
       {questionType === "Objetiva" && (
         <>
-          <h3 style={{ marginTop: 20 }}>Alternativas</h3>
+          <div className="input-button-container">
+      <h2 style={{ margin: 0 }}>Alternativas</h2>
+      <Button onClick={addAlternative}/>
+    </div>
           {alternatives.map((alt, idx) => (
             <div
               key={idx}
@@ -248,45 +250,38 @@ if (!subjectId && newSubjectName.trim()) {
                 gap: 8,
               }}
             >
-              <input
-                type="text"
-                placeholder="Texto da alternativa"
-                value={alt.text}
-                onChange={(e) => handleAlternativeChange(idx, "text", e.target.value)}
-                style={{ flexGrow: 1, padding: 8, borderRadius: 5, border: "1px solid #ccc" }}
-              />
-              <label style={{ display: "flex", alignItems: "center", gap: 4 }}>
+              <div className="alternative-line">
                 <input
-                  type="checkbox"
-                  checked={alt.correct}
-                  onChange={(e) => handleAlternativeChange(idx, "correct", e.target.checked)}
+                  type="text"
+                  placeholder="Texto da alternativa"
+                  value={alt.text}
+                  onChange={(e) => handleAlternativeChange(idx, "text", e.target.value)}
                 />
-                Correta
-              </label>
-              <button
-                type="button"
-                onClick={() => removeAlternative(idx)}
-                className="remove-button"
-                aria-label="Remover alternativa"
-              >
-                &times;
-              </button>
+                
+                <button
+                  type="button"
+                  onClick={() => handleAlternativeChange(idx, "correct", !alt.correct)}
+                  className={`correct-toggle-button ${alt.correct ? "correct" : ""}`}
+                  aria-label="Marcar como correta"
+                >
+                  {alt.correct ? <CheckCircle size={18} /> : <Circle size={18} />}
+                  Correta
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => removeAlternative(idx)}
+                  className="trash-icon-button"
+                  aria-label="Remover alternativa"
+                >
+                  <Trash2 size={18} />
+                </button>
+              </div>
+
             </div>
           ))}
-          <Button onClick={addAlternative}>
-            Adicionar alternativa
-          </Button>
         </>
       )}
-
-      <div
-        className="input-button-container"
-        style={{ marginTop: 20, justifyContent: "flex-end" }} 
-      >
-        <Button onClick={handleSave} disabled={loading}>
-          {loading ? (questionId ? "Salvando..." : "Criando...") : questionId ? "Salvar" : "Criar"}
-        </Button>
-      </div>
     </div>
   );
 };

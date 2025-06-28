@@ -246,3 +246,43 @@
   background-color: #1E40AF;
   color: white;
 }
+
+/* Wrapper para botão e contador de questões */
+.question-select-container {
+  align-items: flex-start; /* alinha o texto à esquerda, botão à direita */
+}
+
+.question-select-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; /* alinha o botão à direita */
+}
+
+.question-count {
+  margin-top: 4px;
+  font-size: 13px;
+  color: #4B5563; /* cinza suave */
+  font-weight: 500;
+}
+
+.question-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  border: 1px solid #E5E7EB;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  background-color: #F3F4F6;
+  transition: box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.question-card:hover {
+  background-color: #F9FAFB;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.question-card p {
+  margin-top: 12px;
+}

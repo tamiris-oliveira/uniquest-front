@@ -32,15 +32,16 @@ export interface SimulationPayload {
     creation_date: string; 
     deadline: string; 
     user_id: number;
-    group_ids: number[];   
+    group_ids: number[];
+    question_ids: number[];   
   };
 }
 
 export interface Alternative {
-  id: number;
+  id?: number;
   text: string;
   correct: boolean;
-  question_id: number;
+  question_id?: number;
   created_at?: string;
   updated_at?: string;
 }
@@ -50,3 +51,7 @@ export interface Subject {
   name: string;
 }
 
+export const questionTypes = [
+  { value: "Objetiva", label: "Múltipla escolha" },
+  { value: "Discursiva", label: "Dissertativa" },
+];
