@@ -10,7 +10,7 @@ import Link from "next/link";
 import { Question, Alternative } from "@/types/types";
 import { Edit, Trash2 } from "lucide-react";
 import { ConfirmToast } from "@/components/main/confirmToast";
-import "./page.css";
+import "./question.css";
 
 const QuestionsPage: React.FC = () => {
   const { token, user } = useAuth();
@@ -109,7 +109,7 @@ const QuestionsPage: React.FC = () => {
             )}
             <p><strong>Tipo:</strong> {question.question_type}</p>
             <p><strong>Enunciado:</strong> {question.statement}</p>
-            {question.alternatives && question.alternatives.length > 0 && (
+            {question.question_type=="Objetiva" && question.alternatives && question.alternatives.length > 0 && (
               <div className="alternatives-container">
                 <strong>Alternativas:</strong>
                 {question.alternatives.map((alt: Alternative) => (

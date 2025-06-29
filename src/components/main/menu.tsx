@@ -6,6 +6,7 @@ import { useAuth } from "@/context/authContext";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import "./menu.css";
+import { avatarPlaceholder } from "@/types/types";
 
 const Menu = () => {
     const { logout, user } = useAuth(); 
@@ -33,7 +34,7 @@ const Menu = () => {
                 
                 <ul className="menu-horizontal">
                     <li className="user-info" onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}>
-                        <img src={user?.avatar} alt="Usuário" className="user-avatar" />
+                        <img src={user?.avatar || avatarPlaceholder} alt="Usuário" className="user-avatar" />
                         <p>{user?.name || ''}</p>
                         {isUserMenuOpen ? (
                             <ChevronUp size={20} />
@@ -57,9 +58,12 @@ const Menu = () => {
 
                 <ul>
                     <li><Link href="/" onClick={closeMenu}>Home</Link></li>
-                    <li><Link href="/groups" onClick={closeMenu}>Grupos</Link></li>
                     <li><Link href="/simulations" onClick={closeMenu}>Simulados</Link></li>
-                    <li><Link href="/questions" onClick={closeMenu}>Questões</Link></li>
+                    <li><Link href="/corrections" onClick={closeMenu}>Correções</Link></li>
+                    <li><Link href="/reports" onClick={closeMenu}>Relatórios</Link></li>
+                    {user?.role === 1 && (
+                        <><li><Link href="/groups" onClick={closeMenu}>Grupos</Link></li><li><Link href="/questions" onClick={closeMenu}>Questões</Link></li></>
+                    )}
                     <li><Link href="/contact" onClick={closeMenu}>Contato</Link></li>
                 </ul>
             </div>

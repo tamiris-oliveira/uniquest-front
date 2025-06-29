@@ -9,7 +9,8 @@ import { ApiRoutes } from "@/services/constants";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSearchParams } from "next/navigation"; 
-import "./page.css";
+import "./editGroup.css";
+import { avatarPlaceholder } from "@/types/types";
 
 const CreateEditGroup = () => {
   const { user, isAuthenticated, token } = useAuth();
@@ -76,33 +77,34 @@ const CreateEditGroup = () => {
       toast.warn("Por favor, insira um nome para o grupo.");
       return;
     }
-
-    const data = {
+    const payload = {
       group: {
         name: groupName,
         invite_code: inviteCode !== "null" ? inviteCode : generateInviteCode(),
         users_id: selectedParticipants,
+        creator_id: user?.id
       },
     };
 
     try {
       if (groupId) {
-        await axios.put(`${ApiRoutes.GROUPS}/${groupId}`, data, {
+        await axios.put(`${ApiRoutes.GROUPS}/${groupId}`, payload, {
           headers: { Authorization: `Bearer ${token}` },
         });
         toast.success("Grupo atualizado com sucesso!");
       } else {
-        await axios.post(ApiRoutes.GROUPS, data, {
+        const {data} = await axios.post(ApiRoutes.GROUPS, payload, {
           headers: { Authorization: `Bearer ${token}` },
         });
         toast.success("Grupo criado com sucesso!");
+        window.location.href = `/groups/createEditGroup?edit=true&id=${data.id}`;
       }
 
       setGroupName("");
       setSelectedParticipants([]);
-
+      if(groupId)
+        fetchGroup();
       fetchUsers();
-      fetchGroup();
     } catch (error) {
       toast.error("Erro ao salvar grupo.");
     }
@@ -115,6 +117,12 @@ const CreateEditGroup = () => {
 
   return (
     <div className="create-group-container">
+    <div className="input-button-container">
+      <h2 style={{ margin: 0 }}>{groupId ? "Editar Grupo" : "Criar Grupo"}</h2>
+      <Button onClick={handleSaveGroup}>
+          {groupId ? "Salvar" : "Criar"}
+        </Button>
+    </div>
       <label htmlFor="group-name">Digite o nome do grupo:</label>
       <div className="input-button-container">
         <input
@@ -124,9 +132,6 @@ const CreateEditGroup = () => {
           onChange={(e) => setGroupName(e.target.value)}
           placeholder="Nome do grupo"
         />
-        <Button onClick={handleSaveGroup}>
-          {groupId ? "Salvar" : "Criar"}
-        </Button>
       </div>
 
       {inviteCode !== "null" && (
@@ -144,7 +149,7 @@ const CreateEditGroup = () => {
           const participant = participants.find((p) => p.id === id);
           return participant ? (
             <div key={participant.id} className="selected-card">
-              <img src={participant.avatar} alt={participant.name} className="participant-photo" />
+              <img src={participant.avatar || avatarPlaceholder} alt={participant.name} className="participant-photo" />
               <span>{participant.name}</span>
               <button className="remove-button" onClick={() => handleRemoveParticipant(participant.id)}>
                 <X size={16} />
@@ -173,7 +178,7 @@ const CreateEditGroup = () => {
               className={`participant-card ${selectedParticipants.includes(participant.id) ? "selected" : ""}`}
               onClick={() => handleSelectParticipant(participant.id)}
             >
-              <img src={participant.avatar} alt={participant.name} className="participant-photo" />
+              <img src={participant.avatar || avatarPlaceholder} alt={participant.name} className="participant-photo" />
               <span>{participant.name}</span>
             </div>
           ))}

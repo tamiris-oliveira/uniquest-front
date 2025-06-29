@@ -73,7 +73,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ type }) => {
     <div className="login-page-container">
       <div className="logo-container">
         <img
-          src="https://www.itabirito.mg.leg.br/imagens/insta.png/image"
+          src="/logo.png"
           alt="Imagem do logo"
         />
       </div>

@@ -8,7 +8,7 @@ import Card from "@/components/main/card";
 import Link from "next/link";
 import Button from "@/components/main/button";
 import { ConfirmToast } from "@/components/main/confirmToast";
-import "./page.css";
+import "./simulation.css";
 import axios from "axios";
 import ApiRoutes from "@/services/constants";
 import { toast } from "react-toastify";
@@ -90,12 +90,15 @@ const Simulations = () => {
   };
   
   return (
-    <div>
-      <div className="button-container">
-        <Link href="./simulations/createEditSimulation">
-          <Button > Criar Novo Simulado</Button>
-        </Link>
-      </div>
+      <div className="create-group-container">
+      {user?.role === 1 && (
+    <div className="input-button-container">
+      <h2 style={{ margin: 0 }}>Simulados</h2>
+      <Link href="/simulations/createEditSimulation">
+        <Button>Criar</Button>
+      </Link>
+    </div>
+    )}
       <Filter groups={simulations} onClickOutside={handleClickOutside} />
       <Card
       items={simulations}

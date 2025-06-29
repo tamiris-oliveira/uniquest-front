@@ -23,14 +23,29 @@ const QuestionSelectModal: React.FC<Props> = ({
   selectedQuestionIds,
 }) => {
   const [questions, setQuestions] = useState<Question[]>([]);
+  const [subjects, setSubjects] = useState<{ id: number; name: string }[]>([]);
+
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
   useEffect(() => {
     if (isOpen) {
       setSelectedIds(selectedQuestionIds ?? []);
+      fetchSubjects();
       fetchQuestions();
     }
   }, [isOpen, selectedQuestionIds]);
+  
+  const fetchSubjects = async () => {
+    try {
+      const { data } = await axios.get(ApiRoutes.SUBJECTS, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setSubjects(data);
+    } catch {
+      toast.error("Erro ao buscar matérias.");
+    }
+  };
+  
 
   const fetchQuestions = async () => {
     try {
@@ -77,44 +92,49 @@ const QuestionSelectModal: React.FC<Props> = ({
         <h2 id="modal-title">Selecionar Questões</h2>
 
         <div className="question-list">
-          {questions.map((q) => {
-            const isSelected = selectedIds.includes(q.id);
-            return (
-              <div key={q.id} className="question-item-with-actions">
-                <label htmlFor={`question-${q.id}`} className="question-label">
-                  <span className="question-statement">{q.statement}</span>
-                </label>
-                <div className="question-actions">
-                  <button
-                    className={`btn-icon ${isSelected ? "marked" : ""}`}
-                    aria-label={
-                      isSelected
-                        ? "Questão selecionada"
-                        : "Marcar questão como selecionada"
-                    }
-                    type="button"
-                    onClick={() => markAsSelected(q.id)}
-                  >
-                    <Check size={18} />
-                  </button>
+        {Object.entries(
+  questions.reduce((acc, q) => {
+    const subjectName =
+      subjects.find((s) => s.id === q.subject_id)?.name || "Outros";
 
-                  <button
-                    className={`btn-icon ${!isSelected ? "marked no-mark" : ""}`}
-                    aria-label={
-                      !isSelected
-                        ? "Questão não selecionada"
-                        : "Desmarcar questão"
-                    }
-                    type="button"
-                    onClick={() => markAsDeselected(q.id)}
-                  >
-                    <X size={18} />
-                  </button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+    if (!acc[subjectName]) acc[subjectName] = [];
+    acc[subjectName].push(q);
+    return acc;
+  }, {} as { [subject: string]: Question[] })
+).map(([subjectName, subjectQuestions]) => (
+
+    <div key={subjectName} className="subject-group">
+      <h3 className="subject-title">{subjectName}</h3>
+      {subjectQuestions.map((q) => {
+        const isSelected = selectedIds.includes(q.id);
+        return (
+          <div key={q.id} className="question-item-with-actions">
+            <label htmlFor={`question-${q.id}`} className="question-label">
+              <span className="question-statement">{q.statement}</span>
+            </label>
+            <div className="question-actions">
+              <button
+                className={`btn-icon ${isSelected ? "marked" : ""}`}
+                type="button"
+                onClick={() => markAsSelected(q.id)}
+              >
+                <Check size={18} />
+              </button>
+              <button
+                className={`btn-icon ${!isSelected ? "marked no-mark" : ""}`}
+                type="button"
+                onClick={() => markAsDeselected(q.id)}
+              >
+                <X size={18} />
+              </button>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  ))}
+</div>
+
 
         <div className="modal-actions">
           <button className="btn-cancel" onClick={onClose} type="button">

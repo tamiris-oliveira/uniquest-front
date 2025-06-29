@@ -1,0 +1,120 @@
+.container {
+    max-width: 48rem;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #111827; /* tom escuro para texto */
+    background-color: #F3F4F6; /* tom cinza claro, padrão do seu outro CSS */
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  }
+  
+  .title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: #1E40AF; /* azul forte */
+    text-align: center;
+  }
+  
+  .question {
+    margin-bottom: 2rem;
+    padding: 1rem 1rem 1.5rem 1rem;
+    border-radius: 8px;
+    background-color: white;
+    border: 1px solid #E5E7EB;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.05);
+    transition: box-shadow 0.2s ease;
+  }
+  
+  .question:hover {
+    box-shadow: 0 4px 8px rgb(0 0 0 / 0.1);
+  }
+  
+  .question-text {
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #334155;
+  }
+  
+  .alternative-label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    font-size: 1rem;
+    color: #334155;
+    transition: color 0.2s ease;
+  }
+  
+  .alternative-label:hover {
+    color: #1E40AF;
+  }
+  
+  .radio-input {
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #CBD5E1;
+    border-radius: 50%;
+    position: relative;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+  }
+  
+  .radio-input:checked {
+    border-color: #1E40AF;
+  }
+  
+  .radio-input:checked::before {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 10px;
+    height: 10px;
+    background-color: #1E40AF;
+    border-radius: 50%;
+  }
+  
+  .textarea {
+    width: 100%;
+    border: 1.5px solid #CBD5E1;
+    border-radius: 6px;
+    padding: 0.5rem;
+    font-size: 1rem;
+    font-family: inherit;
+    resize: vertical;
+    transition: border-color 0.2s ease;
+    color: #111827;
+    background-color: white;
+  }
+  
+  .textarea:focus {
+    border-color: #1E40AF;
+    outline: none;
+    box-shadow: 0 0 5px #93C5FD;
+  }
+  
+  .submit-button {
+    display: block;
+    width: 100%;
+    padding: 0.75rem;
+    background: #D1FAE5;
+    color: #1E3A8A;
+    font-weight: 600;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: background-color 0.3s ease;
+    margin-top: 1rem;
+    box-shadow: 0 2px 6px rgb(30 64 175 / 0.5);
+  }
+  
+  .submit-button:hover {
+    background: #1E3A8A;
+    color: #D1FAE5;
+  }
+  

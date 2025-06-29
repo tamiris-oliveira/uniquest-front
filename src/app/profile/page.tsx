@@ -6,21 +6,22 @@ import ApiRoutes from "@/services/constants";
 import { toast } from "react-toastify";
 import { useDropzone } from "react-dropzone";
 import { Pencil, Trash2 } from "lucide-react";
-import "./page.css";
+import { avatarPlaceholder } from "@/types/types";
+import "./profile.css";
 
 const Profile = () => {
   const { token, user, updateUserData } = useAuth();
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState({user: {
     name: "",
     email: "",
     password: "",
+    password_confirmation: "",
+    role: 0,
     avatar: "",
-  });
+  }});
 
   const [loading, setLoading] = useState(true);
-
-  const avatarPlaceholder = "https://www.gravatar.com/avatar/?d=mp&f=y";
 
   // Busca os dados do perfil no backend
   const getProfile = useCallback(async () => {
@@ -31,12 +32,14 @@ const Profile = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       const userData = response.data;
-      setFormData({
+      setFormData({user: {
         name: userData.name || "",
         email: userData.email || "",
-        password: "",
+        password: userData.password || "",
+        password_confirmation: "",
+        role: userData.role || 0,
         avatar: userData.avatar || "",
-      });
+      }});
     } catch (error) {
       console.error(error);
       toast.error("Erro ao carregar perfil atualizado.");
@@ -68,9 +71,15 @@ const Profile = () => {
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData(prev => ({
+      ...prev,
+      user: {
+        ...prev.user,
+        [e.target.name]: e.target.value
+      }
+    }));
   };
-
+  
   const handleRemovePhoto = () => {
     setFormData((prev) => ({ ...prev, avatar: "" }));
   };
@@ -88,6 +97,7 @@ const Profile = () => {
       updateUserData({
         name: updatedUser.name,
         email: updatedUser.email,
+        role: updatedUser.role,
         avatar: updatedUser.avatar,
       });
 
@@ -117,7 +127,7 @@ const Profile = () => {
       <div className="avatar-wrapper" {...getRootProps()}>
         <input {...getInputProps()} />
         <img
-          src={formData.avatar || avatarPlaceholder}
+          src={formData.user.avatar || avatarPlaceholder}
           alt="Avatar"
           className="avatar-image"
           onClick={open}
@@ -125,7 +135,7 @@ const Profile = () => {
         />
         <div className="avatar-actions">
           <Pencil className="icon-button" onClick={open} />
-          {formData.avatar && (
+          {formData.user.avatar && (
             <Trash2 className="icon-button danger" onClick={handleRemovePhoto} />
           )}
         </div>
@@ -136,7 +146,7 @@ const Profile = () => {
         <input
           type="text"
           name="name"
-          value={formData.name}
+          value={formData.user.name}
           onChange={handleChange}
           autoComplete="name"
         />
@@ -145,7 +155,7 @@ const Profile = () => {
         <input
           type="email"
           name="email"
-          value={formData.email}
+          value={formData.user.email}
           onChange={handleChange}
           autoComplete="email"
         />
@@ -154,7 +164,16 @@ const Profile = () => {
         <input
           type="password"
           name="password"
-          value={formData.password}
+          value={formData.user.password}
+          onChange={handleChange}
+          autoComplete="new-password"
+        />
+
+      <label>Confirme Sua Nova Senha</label>
+        <input
+          type="password"
+          name="password_confirmation"
+          value={formData.user.password_confirmation}
           onChange={handleChange}
           autoComplete="new-password"
         />

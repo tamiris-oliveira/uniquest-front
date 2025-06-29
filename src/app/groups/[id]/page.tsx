@@ -6,7 +6,8 @@ import { ApiRoutes } from "@/services/constants";
 import { toast } from "react-toastify";
 import {Copy } from "lucide-react";
 import { useParams } from "next/navigation";
-import "./page.css";
+import { avatarPlaceholder } from "@/types/types";
+import "./viewGroup.css";
 
 interface Participant {
   id: string;
@@ -69,7 +70,7 @@ const ViewGroup = () => {
         {selectedParticipants.length === 0 && <li>Nenhum participante no grupo.</li>}
         {selectedParticipants.map((participant) => (
           <li key={participant.id} className="participant-list-item">
-            <img src={participant.avatar} alt={participant.name} className="participant-photo" />
+            <img src={participant.avatar || avatarPlaceholder} alt={participant.name} className="participant-photo" />
             <span>{participant.name}</span>
           </li>
         ))}

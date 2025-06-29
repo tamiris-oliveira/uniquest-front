@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import {Copy } from "lucide-react";
 import { useParams } from "next/navigation";
 import "./page.css";
+import { avatarPlaceholder } from "@/types/types";
 
 interface Participant {
   id: string;
@@ -21,7 +22,7 @@ const ViewGroup = () => {
   const [groupName, setGroupName] = useState("");
   const [inviteCode, setInviteCode] = useState("");
   const [selectedParticipants, setSelectedParticipants] = useState<Participant[]>([]);
-  const [search, setSearch] = useState(""); // Se quiser pode remover pois filtro não será usado
+  const [search, setSearch] = useState(""); 
 
   useEffect(() => {
     if (token && id) {
@@ -69,7 +70,7 @@ const ViewGroup = () => {
         {selectedParticipants.length === 0 && <li>Nenhum participante no grupo.</li>}
         {selectedParticipants.map((participant) => (
           <li key={participant.id} className="participant-list-item">
-            <img src={participant.avatar} alt={participant.name} className="participant-photo" />
+            <img src={participant.avatar || avatarPlaceholder} alt={participant.name} className="participant-photo" />
             <span>{participant.name}</span>
           </li>
         ))}

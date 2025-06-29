@@ -74,12 +74,13 @@
 }
 
 .btn-save {
-  background-color: #1E40AF;
-  color: white;
+  background: #D1FAE5;
+  color: #1E3A8A;
 }
 
 .btn-save:hover {
-  background-color: #1E3A8A;
+  background: #1E3A8A;
+  color: #D1FAE5;
 }
 
 .question-list {
@@ -169,5 +170,16 @@
   color: #b91c1c;
 }
 
-/* Modal base styles, buttons etc. mantenha os seus atuais */
+.subject-group {
+  margin-bottom: 1.5rem;
+}
+
+.subject-title {
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 4px;
+}
+
 

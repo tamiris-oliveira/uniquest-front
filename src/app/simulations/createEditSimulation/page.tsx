@@ -7,12 +7,12 @@ import Button from "@/components/main/button";
 import { ApiRoutes } from "@/services/constants";
 import { toast } from "react-toastify";
 import { useSearchParams } from "next/navigation";
-import { Simulation, SimulationPayload, Alternative } from "@/types/types";
+import { Simulation, SimulationPayload, SimulationForm, Alternative } from "@/types/types";
 import Select from "react-select";
 import { format, parseISO, set } from "date-fns";
 import QuestionSelectModal from "@/components/main/questionSelectModal";
 import "react-toastify/dist/ReactToastify.css";
-import "./page.css";
+import "./editSimulation.css";
 
 interface Group {
   id: number;
@@ -23,9 +23,16 @@ const CreateEditSimulation: React.FC = () => {
   const { user, token } = useAuth();
   const searchParams = useSearchParams();
   const simulationId = searchParams.get("id");
-  const [simulationName, setSimulationName] = useState<string>("");
-  const [simulationDescription, setSimulationDescription] = useState<string>("");
-  const [deadline, setDeadline] = useState<string>("");
+  const [form, setForm] = useState<SimulationForm>({
+    title: "",
+    description: "",
+    deadline: "",
+    max_attempts: 1,
+    time_limit: 60,
+    user_id: user!.id,
+    group_ids: [],
+    question_ids: [],
+  });  
   const [groups, setGroups] = useState<Group[]>([]);
   const [selectedGroupIds, setSelectedGroupIds] = useState<number[]>([]);
   const [isModalOpen, setModalOpen] = useState(false);
@@ -37,9 +44,14 @@ const CreateEditSimulation: React.FC = () => {
   useEffect(() => {
     if (token) {
       fetchGroups();
-      if (simulationId) fetchSimulation();
+      if (simulationId) {
+        fetchSimulation();
+      } else {
+        setSelectedGroupIds([]);
+      }
     }
   }, [token, simulationId]);
+  
 
   const fetchGroups = async () => {
     try {
@@ -53,71 +65,80 @@ const CreateEditSimulation: React.FC = () => {
   };
 
   const fetchSimulation = async () => {
+    try {
+      const { data } = await axios.get<Simulation>(
+        ApiRoutes.SIMULATION(simulationId),
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+  
+      setForm({
+        title: data.title,
+        description: data.description,
+        deadline: data.deadline,
+        max_attempts: data.max_attempts ?? 1,
+        time_limit: data.time_limit ?? 60,
+        user_id: user!.id,
+        group_ids: data.groups?.map(group => group.id) || [],
+        question_ids: data.questions?.map(q => q.id) || [],
+      });
+  
+      setQuestions(data.questions || []);
+      setSelectedGroupIds(data.groups?.map(group => group.id) || []);
+    } catch {
+      toast.error("Erro ao carregar simulação.");
+    }
+  };
+  
+
+const handleSaveSimulation = async (questionIds: number[]) => {
+  if (!form.title.trim()) {
+    toast.warn("Por favor, insira um nome para o simulado.");
+    return;
+  }
+
+  const payload: SimulationPayload = {
+    simulation: {
+      ...form,
+      question_ids: questionIds,
+      group_ids: selectedGroupIds,
+      user_id: user!.id,
+      creation_date: new Date().toISOString(),
+    },
+  };
+
   try {
-    const { data } = await axios.get<Simulation>(
-      ApiRoutes.SIMULATION(simulationId),
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
+    if (simulationId) {
+      await axios.put(ApiRoutes.SIMULATION(simulationId), payload, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      toast.success("Simulado atualizado com sucesso!");
+    } else {
+      const {data} =  await axios.post(ApiRoutes.SIMULATIONS, payload, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      toast.success("Simulado criado com sucesso!");
+      window.location.href = `/simulations/createEditSimulation?edit=true&id=${data.id}`;
+    }
 
-    setSimulationName(data.title);
-    setSimulationDescription(data.description);
-    setDeadline(data.deadline); 
+    setForm({
+      title: "",
+      description: "",
+      deadline: "",
+      max_attempts: 1,
+      time_limit: 60,
+      user_id: user!.id,
+      group_ids: [],
+      question_ids: [],
+    });
 
-    const groupIds = data.groups ? data.groups.map(group => group.id) : [];
-    setSelectedGroupIds(groupIds);
-
-    setQuestions(data.questions || []);
-    setSelectedQuestionIds(data.questions ? data.questions.map(q => q.id) : []);
+    fetchGroups();
+    if(simulationId)
+      fetchSimulation();
   } catch {
-    toast.error("Erro ao carregar simulação.");
+    toast.error("Erro ao salvar simulado.");
   }
 };
 
-  const handleSaveSimulation = async (ids: number[]) => {
-    if (!simulationName.trim()) {
-      toast.warn("Por favor, insira um nome para o simulado.");
-      return;
-    }
-
-    const payload: SimulationPayload = {
-      simulation: {
-        title: simulationName,
-        description: simulationDescription,
-        creation_date: new Date().toISOString(),
-        deadline: new Date(deadline).toISOString(),
-        user_id: user!.id,
-        group_ids: selectedGroupIds,
-        question_ids: ids,
-      },
-    };
-
-    try {
-      if (simulationId) {
-        await axios.put<Simulation>(
-                        ApiRoutes.SIMULATION(simulationId),
-          payload,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        console.log("Payload:", payload);
-        toast.success("Simulado atualizado com sucesso!");
-      } else {
-        await axios.post(
-          ApiRoutes.SIMULATIONS,
-          payload,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        toast.success("Simulado criado com sucesso!");
-      }
-      setSimulationName("");
-      setSimulationDescription("");
-      setDeadline("");
-      setSelectedGroupIds([]);
-      fetchGroups();
-      fetchSimulation();
-    } catch {
-      toast.error("Erro ao salvar simulado.");
-    }
-  };
 
   function toInputDateTimeValue(isoString: string): string {
     if (!isoString) return "";
@@ -134,18 +155,21 @@ const CreateEditSimulation: React.FC = () => {
 
   return (
     <div className="create-group-container">
+    <div className="input-button-container">
+      <h2 style={{ margin: 0 }}>{simulationId ? "Editar Simulado" : "Criar Simulado"}</h2>
+      <Button onClick={() => handleSaveSimulation(selectedQuestionIds)}>
+          {simulationId ? "Salvar" : "Criar"}
+        </Button>
+    </div>
       <label htmlFor="simulation-name">Nome do Simulado:</label>
       <div className="input-button-container">
         <input
           id="simulation-name"
           type="text"
-          value={simulationName}
-          onChange={e => setSimulationName(e.target.value)}
+          value={form.title}
+          onChange={e => setForm({ ...form, title: e.target.value })}
           placeholder="Nome do simulado"
         />
-        <Button onClick={() => handleSaveSimulation(selectedQuestionIds)}>
-          {simulationId ? "Salvar" : "Criar"}
-        </Button>
       </div>
 
       <label htmlFor="simulation-description">Descrição:</label>
@@ -153,8 +177,8 @@ const CreateEditSimulation: React.FC = () => {
         <input
           id="simulation-description"
           type="text"
-          value={simulationDescription}
-          onChange={e => setSimulationDescription(e.target.value)}
+          value={form.description}
+          onChange={e => setForm({ ...form, description: e.target.value })}
           placeholder="Descrição do simulado"
         />
       </div>
@@ -164,20 +188,41 @@ const CreateEditSimulation: React.FC = () => {
         <input
           id="simulation-deadline"
           type="datetime-local"
-          value={toInputDateTimeValue(deadline)}
+          value={toInputDateTimeValue(form.deadline)}
           onChange={e => {
             const iso = new Date(e.target.value).toISOString();
-            setDeadline(iso);
+            setForm({ ...form, deadline: iso})
           }}
           placeholder="Selecione data e hora"
         />
+        </div>
 
+    <label htmlFor="simulation-max_attempts">Número de tentativas:</label>
+      <div className="input-button-container">
+        <input
+          id="simulation-max_attempts"
+          type="number"
+          value={form.max_attempts}
+          onChange={e => setForm({ ...form, max_attempts: parseInt(e.target.value) })}
+          placeholder="Selecione data e hora"
+        />
+        </div>
 
-      </div>
+        <label htmlFor="simulation-time_limit">Tempo de realização do simulado (segundos):</label>
+      <div className="input-button-container">
+        <input
+          id="simulation-time_limit"
+          type="number"
+          value={form.time_limit}
+          onChange={e => setForm({ ...form, time_limit: parseInt(e.target.value) })}
+          placeholder="Selecione data e hora"
+        />
+        </div>
+
 
       <label htmlFor="groups-select">Selecione os grupos:</label>
       <div className="input-button-container">
-        <Select
+      <Select
         isMulti
         options={groupOptions}
         value={groupOptions.filter(opt => selectedGroupIds.includes(opt.value))}
@@ -186,16 +231,19 @@ const CreateEditSimulation: React.FC = () => {
         className="react-select-container"
         />
       </div>
-        <div className="input-button-container question-select-container">
-        <p>Selecionar questões:</p>
+      {[form.title, form.deadline].every(field => field && field.trim() !== "") && (
+  <div className="input-button-container question-select-container">
+    <p>Selecionar questões:</p>
 
-        <div className="question-select-wrapper">
-          <Button onClick={() => setModalOpen(true)}/>
-          <p className="question-count">
-            {selectedQuestionIds.length} questão(ões) selecionada(s)
-          </p>
-        </div>
-      </div>
+    <div className="question-select-wrapper">
+      <Button onClick={() => setModalOpen(true)} />
+      <p className="question-count">
+        {selectedQuestionIds.length} questão(ões) selecionada(s)
+      </p>
+    </div>
+  </div>
+)}
+
 
       {questions.map((question) => (
           <div key={question.id} className="question-card">

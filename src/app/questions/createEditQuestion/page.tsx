@@ -10,7 +10,7 @@ import { Question } from "@/types/types";
 import { Trash2, CheckCircle, Circle } from "lucide-react";
 import { Alternative, questionTypes } from "@/types/types";
 import "react-toastify/dist/ReactToastify.css";
-import "./page.css";
+import "./editQuestion.css";
 
 const CreateEditQuestion: React.FC = () => {
   const { user, token } = useAuth();
@@ -41,7 +41,6 @@ const CreateEditQuestion: React.FC = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
         setSubjects(data);
-        setSubjectId(data.length > 0 ? data[0].id : null);
       } catch {
         toast.error("Erro ao carregar as matérias.");
       }
@@ -58,6 +57,7 @@ const CreateEditQuestion: React.FC = () => {
       setQuestionType(data.question_type);
       setJustification(data.justification);
       setAlternatives(data.alternatives || []);
+      setSubjectId(data.subject_id)
     } catch {
       toast.error("Erro ao carregar a questão.");
     } finally {
@@ -143,10 +143,11 @@ if (!subjectId && newSubjectName.trim()) {
         });
         toast.success("Questão atualizada com sucesso!");
       } else {
-        await axios.post(ApiRoutes.QUESTIONS, payload, {
+        const {data} =  await axios.post(ApiRoutes.QUESTIONS, payload, {
           headers: { Authorization: `Bearer ${token}` },
         });
         toast.success("Questão criada com sucesso!");
+        window.location.href = `/questions/createEditQuestion?edit=true&id=${data.id}`;
       }
       router.push("/questions");
     } catch {
@@ -158,7 +159,7 @@ if (!subjectId && newSubjectName.trim()) {
 
   return (
     <div className="create-group-container">
-      <div className="input-button-container">
+    <div className="input-button-container">
       <h2 style={{ margin: 0 }}>{questionId ? "Editar Questão" : "Criar Questão"}</h2>
       <Button onClick={handleSave} disabled={loading}>
           {loading ? (questionId ? "Salvando..." : "Criando...") : questionId ? "Salvar" : "Criar"}
