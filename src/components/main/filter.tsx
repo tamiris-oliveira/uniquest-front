@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import "./filter.css";
+import Spinner from "./spinner";
 
 interface Group {
   [key: string]: any;
@@ -60,7 +61,7 @@ const FilterGroup = ({ groups, onClickOutside }: FilterGroupProps) => {
   return (
     <div className="filter-group" ref={filterRef}>
       {loading ? (
-        <div className="loading-spinner">Carregando...</div>
+        <Spinner />
       ) : (
         fields.map((field) => (
           <select

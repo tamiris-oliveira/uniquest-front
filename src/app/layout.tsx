@@ -22,7 +22,12 @@ export default function RootLayout({
             children
           ) : (
             <>
-              <Menu />
+              {/* O Menu agora está dentro de um header semântico */}
+              <header className="main-header">
+                <Menu />
+              </header>
+              
+              {/* O conteúdo principal permanece em main */}
               <main>{children}</main>
             </>
           )}

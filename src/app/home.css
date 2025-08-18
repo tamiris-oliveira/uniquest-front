@@ -1,0 +1,126 @@
+/* HomePage.css */
+
+/* Estilos para o container principal da página */
+.homepage-container {
+    width: 100%;
+    padding: 1rem; /* Equivalente a p-4 */
+  }
+  
+  /* Título principal e subtítulo */
+  .homepage-header h1 {
+    font-size: 1.875rem; /* text-3xl */
+    font-weight: 700; /* font-bold */
+    color: var(--foreground);
+    margin-bottom: 0.5rem; /* mb-2 */
+  }
+  
+  .homepage-header p {
+    color: #4b5563; /* text-gray-600 */
+    margin-bottom: 2rem; /* mb-8 */
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    .homepage-header p {
+      color: #9ca3af; /* dark:text-gray-400 */
+    }
+  }
+  
+  /* Grid responsivo para os cards */
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* Padrão para telas pequenas */
+    gap: 1.5rem; /* gap-6 */
+  }
+  
+  /* Media queries para ajustar o número de colunas */
+  @media (min-width: 768px) { /* md: */
+    .dashboard-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (min-width: 1024px) { /* lg: */
+    .dashboard-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  
+  /* Estilo individual de cada card */
+  .dashboard-card {
+    background-color: var(--card-background, #ffffff);
+    padding: 1.5rem; /* p-6 */
+    border-radius: 0.5rem; /* rounded-lg */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1); /* shadow-md */
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .dashboard-card:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1); /* hover:shadow-xl */
+    transform: translateY(-4px); /* hover:-translate-y-1 */
+  }
+  
+  .dashboard-card-content {
+    flex-grow: 1;
+  }
+  
+  /* Círculo do ícone */
+  .card-icon-wrapper {
+    width: 3rem; /* w-12 */
+    height: 3rem; /* h-12 */
+    border-radius: 9999px; /* rounded-full */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+  }
+  
+  /* Cores de fundo para os ícones */
+  .card-icon-wrapper.bg-blue { background-color: #3b82f6; }
+  .card-icon-wrapper.bg-green { background-color: #22c55e; }
+  .card-icon-wrapper.bg-yellow { background-color: #eab308; }
+  .card-icon-wrapper.bg-purple { background-color: #8b5cf6; }
+  .card-icon-wrapper.bg-red { background-color: #ef4444; }
+  .card-icon-wrapper.bg-gray { background-color: #6b7280; }
+  .card-icon-wrapper.bg-indigo { background-color: #6366f1; }
+  
+  
+  /* Tipografia dentro do card */
+  .card-title {
+    font-size: 1.25rem; /* text-xl */
+    font-weight: 700; /* font-bold */
+    margin-top: 1rem; /* mt-4 */
+    color: var(--foreground);
+  }
+  
+  .card-description {
+    color: #4b5563; /* text-gray-600 */
+    margin-top: 0.5rem; /* mt-2 */
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    .card-description {
+      color: #9ca3af; /* dark:text-gray-400 */
+    }
+  }
+  
+  /* Link "Acessar" no final do card */
+  .card-link {
+    margin-top: 1rem; /* mt-4 */
+    display: flex;
+    align-items: center;
+    color: #2563eb; /* text-blue-600 */
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    .card-link {
+      color: #60a5fa; /* dark:text-blue-400 */
+    }
+  }
+  
+  .card-link span {
+    margin-right: 0.5rem; /* ml-2 no ícone, então margem no span */
+  }
+  

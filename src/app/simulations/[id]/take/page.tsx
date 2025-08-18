@@ -8,6 +8,7 @@ import { useAuth } from "@/context/authContext";
 import { toast } from "react-toastify";
 import axios from "axios";
 import "./take.css";
+import Spinner from "@/components/main/spinner";
 
 export default function TakeSimulationPage() {
   const { id } = useParams();
@@ -109,7 +110,7 @@ export default function TakeSimulationPage() {
     }
   };
 
-  if (loading) return <div className="container">Carregando...</div>;
+  if (loading) return <Spinner />;
 
   return (
     <div className="container">

@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/authContext';
+import Spinner from '@/components/main/spinner';
 
 const withAuth = (WrappedComponent: React.ComponentType) => {
   const Wrapper = (props: any) => {
@@ -14,7 +15,7 @@ const withAuth = (WrappedComponent: React.ComponentType) => {
     }, [isAuthenticated, isLoading, router]);
 
     if (isLoading) {
-      return <div>Carregando autenticação...</div>; 
+      <Spinner />
     }
 
     if (!isAuthenticated) {

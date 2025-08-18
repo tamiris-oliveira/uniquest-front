@@ -8,6 +8,7 @@ import { useDropzone } from "react-dropzone";
 import { Pencil, Trash2 } from "lucide-react";
 import { avatarPlaceholder } from "@/types/types";
 import "./profile.css";
+import Spinner from "@/components/main/spinner";
 
 const Profile = () => {
   const { token, user, updateUserData } = useAuth();
@@ -115,7 +116,7 @@ const Profile = () => {
   if (!token || loading) {
     return (
       <div className="profile-container">
-        <p>Carregando perfil...</p>
+        <Spinner />
       </div>
     );
   }

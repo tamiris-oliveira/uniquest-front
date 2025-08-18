@@ -1,87 +1,131 @@
 .login-page-container {
     display: flex;
-    height: 100vh;
-    background-color: #1E3A8A; 
+    /* Em telas pequenas, o layout é uma coluna (logo em cima, form embaixo) */
+    flex-direction: column; 
+    min-height: 100vh; /* Usa min-height para evitar cortes em telas pequenas */
+    background-color: #1E3A8A;
+    color: #F3F4F6;
     align-items: center;
     justify-content: center;
-}
-
-.logo-container {
-    flex: 1; 
+    padding: 1rem;
+  }
+  
+  /* 2. Container do Logo */
+  .logo-container {
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-.logo-container img {
-    width: 100%; 
+    padding: 2rem 1rem;
+    width: 100%;
+  }
+  
+  .logo-container img {
+    max-width: 800px; /* Limita o tamanho do logo */
+    width: 100%;
     height: auto;
-}
-
-.form-container {
-    flex: 1; 
+  }
+  
+  /* 3. Container do Formulário */
+  .form-container {
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-.login-form-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh; 
-}
-
-.login-form h1 {
-    margin-bottom: 15px;
-    color: #F3F4F6;
-}
-
-.login-form label {
+    width: 100%;
+  }
+  
+  .login-form {
+    width: 100%;
+    max-width: 400px; /* Garante que o formulário não fique muito largo */
+    padding: 2rem;
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.05); /* Fundo sutil para o form */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  /* 4. Estilos dos Elementos do Formulário */
+  .login-form h1 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+    font-weight: 600;
+  }
+  
+  .login-form label {
     display: block;
-    margin: 10px 0 5px;
-    text-align: left; 
-    color: #F3F4F6;
-}
-
-.login-form input {
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+  
+  .login-form input {
     width: 100%;
-    padding: 8px;
-    border: 1px solid #1E3A8A;
+    padding: 0.75rem;
+    border: 1px solid transparent; /* Borda transparente por padrão */
     border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.2);
+    color: #F3F4F6;
     outline: none;
-}
-
-.login-form input:focus {
-    border-color: #D1FAE5;
-}
-
-.login-form button {
+    transition: border-color 0.2s ease-in-out;
+    margin-bottom: 1rem; /* Espaço entre os inputs */
+  }
+  
+  .login-form input::placeholder {
+    color: #9ca3af;
+  }
+  
+  .login-form input:focus {
+    border-color: #D1FAE5; /* Cor de destaque ao focar */
+  }
+  
+  .login-form button {
     width: 100%;
-    padding: 10px;
+    padding: 0.75rem;
     background-color: #D1FAE5;
     color: #1E3A8A;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    margin-top: 15px;
-    font-size: 16px;
-}
-
-.login-form button:hover {
-    background-color: #1E3A8A;
-    color: #D1FAE5
-}
-
-.login-form span {
+    margin-top: 1rem;
+    font-size: 1rem;
+    font-weight: 700;
+    transition: background-color 0.2s, color 0.2s;
+  }
+  
+  .login-form button:hover {
+    background-color: #a7f3d0; /* Tom mais claro do verde menta */
+  }
+  
+  .login-form a {
+    text-decoration: none; /* Remove sublinhado do Link */
+  }
+  
+  .login-form span {
     display: block;
-    margin-top: 10px;
+    margin-top: 1rem;
     color: #F3F4F6;
     cursor: pointer;
-    text-align: center
-}
-
-.login-form span:hover {
+    text-align: center;
+    font-size: 0.875rem;
+    transition: color 0.2s;
+  }
+  
+  .login-form span:hover {
     color: #D1FAE5;
+  }
+  
+  
+  /* 5. Media Query para Responsividade (Telas maiores) */
+  @media (min-width: 768px) {
+    .login-page-container {
+      /* Em telas maiores, volta para o layout de duas colunas */
+      flex-direction: row;
+    }
+  
+    .logo-container {
+      flex: 1; /* Ocupa metade do espaço */
+      padding: 2rem;
+    }
+  
+    .form-container {
+      flex: 1; /* Ocupa a outra metade */
+    }
 }

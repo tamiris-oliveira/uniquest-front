@@ -9,6 +9,7 @@ import Button from "@/components/main/button";
 import {Answer, Correction} from "@/types/types";
 import "./correctionEdit.css";
 import ApiRoutes from "@/services/constants";
+import Spinner from "@/components/main/spinner";
 
 
 const CreateEditCorrection = () => {
@@ -50,7 +51,7 @@ const CreateEditCorrection = () => {
     fetchAnswerAndCorrection();
   }, [answerId, token]);
 
-  if (!answer) return <p>Carregando dados da resposta...</p>;
+  if (!answer) return <Spinner />;
 
   const isDiscursive = answer.question.question_type === "Discursiva";
 
