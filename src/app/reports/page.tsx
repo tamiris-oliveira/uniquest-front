@@ -52,7 +52,7 @@ const ReportsPage = () => {
   const { token, user } = useAuth();
   
   // Define o tipo de relatório inicial com base no perfil do usuário
-  const defaultReportType: ReportType = user?.role === 1 ? "teacher_groups_comparison" : "student_evolution";
+  const defaultReportType: ReportType = (user?.role === 1 || user?.role === 2) ? "teacher_groups_comparison" : "student_evolution";
   
   // Estados
   const [reportType, setReportType] = useState<ReportType>(defaultReportType);
@@ -71,7 +71,7 @@ const ReportsPage = () => {
 
   // Efeito para carregar dados necessários para os filtros de professor
   useEffect(() => {
-    if (user?.role === 1 && token) {
+    if ((user?.role === 1 || user?.role === 2) && token) {
       // Carrega lista de turmas
       axios.get(ApiRoutes.GROUPS, { headers: { Authorization: `Bearer ${token}` } })
         .then((res) => setGroupsList(res.data))

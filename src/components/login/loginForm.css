@@ -56,7 +56,8 @@
     font-weight: 500;
   }
   
-  .login-form input {
+  .login-form input,
+  .login-form select {
     width: 100%;
     padding: 0.75rem;
     border: 1px solid transparent; /* Borda transparente por padrão */
@@ -66,14 +67,30 @@
     outline: none;
     transition: border-color 0.2s ease-in-out;
     margin-bottom: 1rem; /* Espaço entre os inputs */
+    font-size: 1rem;
   }
   
   .login-form input::placeholder {
     color: #9ca3af;
   }
   
-  .login-form input:focus {
+  .login-form input:focus,
+  .login-form select:focus {
     border-color: #D1FAE5; /* Cor de destaque ao focar */
+  }
+  
+  .login-form select {
+    cursor: pointer;
+  }
+  
+  .login-form select:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  .login-form select option {
+    background-color: #1E3A8A;
+    color: #F3F4F6;
   }
   
   .login-form button {
@@ -90,8 +107,14 @@
     transition: background-color 0.2s, color 0.2s;
   }
   
-  .login-form button:hover {
+  .login-form button:hover:not(:disabled) {
     background-color: #a7f3d0; /* Tom mais claro do verde menta */
+  }
+  
+  .login-form button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background-color: #9ca3af;
   }
   
   .login-form a {

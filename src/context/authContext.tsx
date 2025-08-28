@@ -4,6 +4,12 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
 
+interface Course {
+  id: number;
+  name: string;
+  code: string;
+}
+
 interface User {
   id: number;
   name: string;
@@ -11,6 +17,8 @@ interface User {
   role: number;
   avatar?: string;
   created_at?: string;
+  course?: Course;
+  course_id?: number;
 }
 
 interface AuthContextType {

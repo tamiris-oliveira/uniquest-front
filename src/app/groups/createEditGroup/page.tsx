@@ -48,7 +48,7 @@ const CreateEditGroup = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get(ApiRoutes.USERS, {
+      const response = await axios.get(ApiRoutes.COURSE_USERS(user?.course_id), {
         headers: { Authorization: `Bearer ${token}` },
       });
       setParticipants(response.data);
@@ -110,11 +110,6 @@ const CreateEditGroup = () => {
     }
   };
 
-  const handleCopyInviteCode = () => {
-    navigator.clipboard.writeText(inviteCode);
-    toast.info("Código de convite copiado!");
-  };
-
   return (
     <div className="create-group-container">
     <div className="input-button-container">
@@ -133,15 +128,6 @@ const CreateEditGroup = () => {
           placeholder="Nome do grupo"
         />
       </div>
-
-      {inviteCode !== "null" && (
-        <div className="invite-code-container">
-          <p>Código de convite: <strong>{inviteCode}</strong></p>
-          <button className="copy-button" onClick={handleCopyInviteCode}>
-            <Copy size={16} /> Copiar
-          </button>
-        </div>
-      )}
 
       <p>Participantes selecionados:</p>
       <div className="selected-participants">
@@ -167,6 +153,23 @@ const CreateEditGroup = () => {
           value={search}
           onChange={(e) => setSearch(e.target.value.toLowerCase())}
         />
+      </div>
+
+      <div className="select-all-container">
+        <label className="select-all-checkbox">
+          <input
+            type="checkbox"
+            checked={selectedParticipants.length === participants.length && participants.length > 0}
+            onChange={(e) => {
+              if (e.target.checked) {
+                setSelectedParticipants(participants.map(p => p.id));
+              } else {
+                setSelectedParticipants([]);
+              }
+            }}
+          />
+          Selecionar todos os participantes
+        </label>
       </div>
 
       <div className="participants-list">

@@ -99,7 +99,7 @@ const AnswersPage = () => {
               })()}
             </span>
 
-            {user?.role === 1 ? (
+            {(user?.role === 1 || user?.role === 2) ? (
               <Edit
                 onClick={() => handleCorrection(answer.id)}
                 style={{ cursor: "pointer" }}

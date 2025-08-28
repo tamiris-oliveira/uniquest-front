@@ -91,7 +91,7 @@ const Simulations = () => {
   
   return (
       <div className="create-group-container">
-      {user?.role === 1 && (
+      {(user?.role === 1 || user?.role === 2) && (
     <div className="input-button-container">
       <h2 style={{ margin: 0 }}>Simulados</h2>
       <Link href="/simulations/createEditSimulation">

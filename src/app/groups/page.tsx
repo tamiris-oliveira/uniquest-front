@@ -18,7 +18,7 @@ const Groups = () => {
   const { user, isAuthenticated, token } = useAuth();
   const router = useRouter();
   const initialFilters = (): { [key: string]: string } => {
-    if (user?.role === 1) {
+    if (user?.role === 1 || user?.role === 2) {
       return { creator_id: String(user.id) };
     }
     return {};
@@ -66,7 +66,7 @@ const Groups = () => {
       return acc;
     }, {} as { [key: string]: string });
 
-    if (user?.role === 1) {
+    if (user?.role === 1 || user?.role === 2) {
       desformattedFilters["creator_id"] = String(user.id);
     } else {
       delete desformattedFilters["creator_id"];
@@ -104,12 +104,14 @@ const Groups = () => {
 
   return (
     <div className="create-group-container">
+      {(user?.role === 1 || user?.role === 2) && (
     <div className="input-button-container">
       <h2 style={{ margin: 0 }}>Grupos</h2>
       <Link href="/groups/createEditGroup">
         <Button>Criar</Button>
       </Link>
     </div>
+    )}
       <Filter groups={groups} onClickOutside={handleClickOutside} />
       <Card
       items={groups}

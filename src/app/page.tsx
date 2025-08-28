@@ -69,7 +69,6 @@ const StudentDashboard: React.FC<DashboardProps> = ({ user }) => {
       <div className="dashboard-grid">
         <DashboardCard title="Iniciar Simulado" description="Veja os simulados disponíveis e comece um novo desafio." href="/simulations" icon={FileText} color="bg-blue" />
         <DashboardCard title="Meus Relatórios" description="Acompanhe sua evolução, acertos e erros por matéria." href="/reports" icon={BarChart2} color="bg-green" />
-        <DashboardCard title="Notificações" description="Confira seus avisos e notas de correção recentes." href="/notifications" icon={Bell} color="bg-red" />
         <DashboardCard title="Meu Perfil" description="Atualize seus dados e altere sua senha." href="/profile" icon={Settings} color="bg-gray" />
       </div>
     </div>
@@ -98,7 +97,7 @@ const HomePage: React.FC = () => {
 
   return (
     <div className="homepage-container">
-      {user?.role === 1 ? <AdminDashboard user={user} /> : <StudentDashboard user={user} />}
+      {(user?.role === 1 || user?.role === 2) ? <AdminDashboard user={user} /> : <StudentDashboard user={user} />}
     </div>
   );
 };

@@ -38,6 +38,11 @@ export const ApiRoutes = {
   // --- Matérias (Subjects) ---
   SUBJECTS: `${BASE_URL}/subjects`,
 
+  // --- Cursos ---
+  COURSES: `${BASE_URL}/courses`,
+  COURSE: (id) => `${BASE_URL}/courses/${id}`,
+  COURSE_USERS: (courseId) => `${BASE_URL}/courses/${courseId}/users`,
+
   // --- NOVAS ROTAS DE RELATÓRIOS OTIMIZADOS 📊 ---
 
   // Relatórios para Alunos

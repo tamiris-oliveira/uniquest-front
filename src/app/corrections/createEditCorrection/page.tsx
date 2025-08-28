@@ -21,8 +21,6 @@ const CreateEditCorrection = () => {
 
   const [answer, setAnswer] = useState<Answer | null>(null);
   const [correction, setCorrection] = useState<Correction | null>(null);
-  const [feedback, setFeedback] = useState("");
-  const [grade, setGrade] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -38,10 +36,15 @@ const CreateEditCorrection = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (data.length > 0) {
-          const corr = data[0];
-          setCorrection(corr);
-          setFeedback(corr.feedback || "");
-          setGrade(corr.grade);
+          setCorrection(data[0]);
+        } else {
+          // Inicializa uma correção vazia se não existir
+          setCorrection({
+            id: 0, // Será null no backend para indicar nova correção
+            grade: null,
+            feedback: "",
+            created_at: new Date().toISOString()
+          });
         }
       } catch (error) {
         toast.error("Erro ao carregar dados da correção.");
@@ -51,16 +54,16 @@ const CreateEditCorrection = () => {
     fetchAnswerAndCorrection();
   }, [answerId, token]);
 
-  if (!answer) return <Spinner />;
+  if (!answer || !correction) return <Spinner />;
 
   const isDiscursive = answer.question.question_type === "Discursiva";
 
   const handleSaveCorrection = async () => {
-    if (isDiscursive && (grade === null || grade < 0 || grade > 10)) {
+    if (isDiscursive && (correction.grade === null || correction.grade < 0 || correction.grade > 10)) {
       toast.warn("Informe uma nota válida entre 0 e 10.");
       return;
     }
-    if (!feedback.trim()) {
+    if (!correction.feedback?.trim()) {
       toast.warn("O feedback é obrigatório.");
       return;
     }
@@ -68,17 +71,18 @@ const CreateEditCorrection = () => {
     setLoading(true);
 
     try {
-      if (correction) {
-        await axios.put<Correction[]>(ApiRoutes.CORRECTION(correction!.id),
-          correction,
+      if (correction.id && correction.id > 0) {
+        await axios.put<Correction>(ApiRoutes.CORRECTION(correction.id),
+          { correction },
           { headers: { Authorization: `Bearer ${token}` } }
         );
         toast.success("Correção atualizada com sucesso.");
       } else {
-        await axios.post<Correction[]>(ApiRoutes.CORRECTIONS(answerId),
-          { correction: { grade: isDiscursive ? grade : null, feedback } },
+        const response = await axios.post<Correction>(ApiRoutes.CORRECTIONS(answerId),
+          { correction: { grade: isDiscursive ? correction.grade : null, feedback: correction.feedback } },
           { headers: { Authorization: `Bearer ${token}` } }
         );
+        setCorrection(response.data);
         toast.success("Correção criada com sucesso.");
       }
     } catch (error) {
@@ -137,8 +141,11 @@ const CreateEditCorrection = () => {
               min={0}
               max={10}
               step={0.1}
-              value={grade ?? ""}
-              onChange={(e) => setGrade(e.target.value === "" ? null : Number(e.target.value))}
+              value={correction.grade ?? ""}
+              onChange={(e) => setCorrection({
+                ...correction,
+                grade: e.target.value === "" ? null : Number(e.target.value)
+              })}
               style={{ width: 60, marginLeft: 10 }}
               disabled={!isDiscursive || isReadOnly}
             />
@@ -148,8 +155,11 @@ const CreateEditCorrection = () => {
           <label htmlFor="feedback">Feedback:</label>
           <textarea
             id="feedback"
-            value={feedback}
-            onChange={(e) => setFeedback(e.target.value)}
+            value={correction.feedback || ""}
+            onChange={(e) => setCorrection({
+              ...correction,
+              feedback: e.target.value
+            })}
             rows={4}
             style={{ width: "100%", resize: "vertical" }}
             placeholder="Digite seu feedback aqui"

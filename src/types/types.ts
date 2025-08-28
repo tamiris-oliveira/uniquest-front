@@ -19,7 +19,7 @@ export interface Question {
   statement: string;
   question_type: string;
   justification: string;
-  user_id: number;
+  user: User;
   subject_id: number;
   alternatives: Alternative[];
 }

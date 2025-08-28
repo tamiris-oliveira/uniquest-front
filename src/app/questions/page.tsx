@@ -91,7 +91,7 @@ const QuestionsPage: React.FC = () => {
         <h3 style={{ marginBottom: 8, color: "#1E3A8A" }}>{subject}</h3>
         {questions.map((question) => (
           <div key={question.id} className="question-card">
-            {user?.id === question.user_id && (
+            {user?.id === question.user.id && (
               <div className="actions-container">
                 <Link href={`/questions/createEditQuestion?id=${question.id}`}>
                   <button className="action-button edit" title="Editar">

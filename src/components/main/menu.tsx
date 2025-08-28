@@ -61,10 +61,15 @@ const Menu = () => {
                     <li><Link href="/simulations" onClick={closeMenu}>Simulados</Link></li>
                     <li><Link href="/corrections" onClick={closeMenu}>Correções</Link></li>
                     <li><Link href="/reports" onClick={closeMenu}>Relatórios</Link></li>
-                    {user?.role === 1 && (
-                        <><li><Link href="/groups" onClick={closeMenu}>Grupos</Link></li><li><Link href="/questions" onClick={closeMenu}>Questões</Link></li></>
+                    {(user?.role === 1 || user?.role === 2) && (
+                        <>
+                            <li><Link href="/groups" onClick={closeMenu}>Grupos</Link></li>
+                            <li><Link href="/questions" onClick={closeMenu}>Questões</Link></li>
+                        </>
                     )}
-                    <li><Link href="/contact" onClick={closeMenu}>Contato</Link></li>
+                    {(user?.role === 2 || (user?.role === 1 && user?.course)) && (
+                        <li><Link href="/courses" onClick={closeMenu}>Cursos</Link></li>
+                    )}
                 </ul>
             </div>
         </>

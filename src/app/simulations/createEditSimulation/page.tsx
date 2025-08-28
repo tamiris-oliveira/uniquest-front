@@ -222,13 +222,29 @@ const handleSaveSimulation = async (questionIds: number[]) => {
 
       <label htmlFor="groups-select">Selecione os grupos:</label>
       <div className="input-button-container">
-      <Select
-        isMulti
-        options={groupOptions}
-        value={groupOptions.filter(opt => selectedGroupIds.includes(opt.value))}
-        onChange={opts => setSelectedGroupIds(opts.map(opt => opt.value))}
-        classNamePrefix="custom-select"
-        className="react-select-container"
+        <div className="select-all-container">
+          <label className="select-all-checkbox">
+            <input
+              type="checkbox"
+              checked={selectedGroupIds.length === groups.length && groups.length > 0}
+              onChange={(e) => {
+                if (e.target.checked) {
+                  setSelectedGroupIds(groups.map(g => g.id));
+                } else {
+                  setSelectedGroupIds([]);
+                }
+              }}
+            />
+            Selecionar todos os grupos
+          </label>
+        </div>
+        <Select
+          isMulti
+          options={groupOptions}
+          value={groupOptions.filter(opt => selectedGroupIds.includes(opt.value))}
+          onChange={opts => setSelectedGroupIds(opts.map(opt => opt.value))}
+          classNamePrefix="custom-select"
+          className="react-select-container"
         />
       </div>
       {[form.title, form.deadline].every(field => field && field.trim() !== "") && (
