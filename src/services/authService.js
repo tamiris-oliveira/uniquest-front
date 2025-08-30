@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from './axiosConfig';
 import Cookies from 'js-cookie';
 import ApiRoutes from './constants';
 

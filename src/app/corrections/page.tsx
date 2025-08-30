@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "@/context/authContext";
 import withAuth from "@/context/withAuth";
 import { useRouter } from "next/navigation";
-import axios from "axios";
+import axios from "@/services/axiosConfig";
 import { format } from "date-fns";
 import { toast } from "react-toastify";
 import ApiRoutes from "@/services/constants";

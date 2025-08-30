@@ -6,7 +6,7 @@ import ApiRoutes from "@/services/constants";
 import { SubmitAnswer, Attempt, Question, Simulation } from "@/types/types";
 import { useAuth } from "@/context/authContext";
 import { toast } from "react-toastify";
-import axios from "axios";
+import axios from "@/services/axiosConfig";
 import "./take.css";
 import Spinner from "@/components/main/spinner";
 
@@ -20,8 +20,10 @@ export default function TakeSimulationPage() {
   const [timer, setTimer] = useState<number>(0);
   const [simulation, setSimulation] = useState<Simulation | null>(null);
   const [attempt, setAttempt] = useState<Attempt | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const simulationRef = useRef<Simulation | null>(null);
 
   useEffect(() => {
     if (id && token) {
@@ -40,6 +42,7 @@ export default function TakeSimulationPage() {
       );
 
       setSimulation(data);
+      simulationRef.current = data; // Manter referência atualizada para o timer
       setQuestions(data.questions || []);
       startTimer(data.time_limit || 60);
       setLoading(false);
@@ -57,7 +60,7 @@ export default function TakeSimulationPage() {
       if (remaining <= 0) {
         if (timerRef.current) clearInterval(timerRef.current);
         toast.info("Tempo esgotado. Enviando respostas...");
-        handleSubmit();
+        handleAutoSubmit();
       } else {
         setTimer(remaining);
       }
@@ -74,17 +77,47 @@ export default function TakeSimulationPage() {
     setAnswers(prev => ({ ...prev, [questionId]: value }));
   };
 
+  const handleAutoSubmit = async () => {
+    // Função específica para envio automático quando o tempo acaba
+    if (isSubmitting) return; // Prevenir múltiplos envios
+    
+    const currentSimulation = simulationRef.current;
+    if (!currentSimulation) {
+      console.error("Simulação não disponível para envio automático");
+      toast.error("Erro: Simulação não carregada. Redirecionando...");
+      router.push("/simulations");
+      return;
+    }
+
+    await submitAnswers(currentSimulation, true);
+  };
+
   const handleSubmit = async () => {
+    // Função para envio manual
+    if (isSubmitting) return; // Prevenir múltiplos envios
+    
+    if (!simulation) {
+      toast.error("Simulado não carregado.");
+      return;
+    }
+
+    await submitAnswers(simulation, false);
+  };
+
+  const submitAnswers = async (currentSimulation: Simulation, isAutoSubmit: boolean = false) => {
     try {
-      if (!simulation) {
-        toast.error("Simulado não carregado.");
-        return;
+      setIsSubmitting(true);
+      
+      // Limpar timer se ainda estiver rodando
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
       }
 
-      // Criar tentativa só aqui, ao enviar respostas
+      // Criar tentativa
       const { data: newAttempt } = await axios.post(
         ApiRoutes.ATTEMPTS,
-        { attempt: { simulation_id: simulation.id } },
+        { attempt: { simulation_id: currentSimulation.id } },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -103,10 +136,17 @@ export default function TakeSimulationPage() {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      toast.success("Simulado enviado!");
+      const message = isAutoSubmit 
+        ? "Tempo esgotado! Respostas enviadas automaticamente." 
+        : "Simulado enviado com sucesso!";
+      
+      toast.success(message);
       router.push("/simulations");
-    } catch {
-      toast.error("Erro ao enviar respostas.");
+    } catch (error) {
+      console.error("Erro ao enviar respostas:", error);
+      toast.error("Erro ao enviar respostas. Redirecionando...");
+      // Em caso de erro, simplesmente redireciona sem tentar novamente
+      router.push("/simulations");
     }
   };
 
@@ -149,8 +189,12 @@ export default function TakeSimulationPage() {
         </div>
       ))}
 
-      <button className="submit-button" onClick={handleSubmit}>
-        Enviar Respostas
+      <button 
+        className="submit-button" 
+        onClick={handleSubmit}
+        disabled={isSubmitting}
+      >
+        {isSubmitting ? "Enviando..." : "Enviar Respostas"}
       </button>
     </div>
   );

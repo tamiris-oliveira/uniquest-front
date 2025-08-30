@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import withAuth from "@/context/withAuth";
-import axios from "axios";
+import axios from "@/services/axiosConfig";
 import { useAuth } from "@/context/authContext";
 import { X, Copy } from "lucide-react";
 import Button from "@/components/main/button";
@@ -51,7 +51,9 @@ const CreateEditGroup = () => {
       const response = await axios.get(ApiRoutes.COURSE_USERS(user?.course_id), {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setParticipants(response.data);
+      // Filtrar para excluir o próprio usuário logado
+      const filteredUsers = response.data.filter((participant: any) => participant.id !== user?.id);
+      setParticipants(filteredUsers);
     } catch (error) {
       toast.error("Erro ao buscar usuários.");
     }

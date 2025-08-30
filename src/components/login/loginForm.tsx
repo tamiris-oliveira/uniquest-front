@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/authContext";
-import axios from "axios";
+import axios from "@/services/axiosConfig";
 import Cookies from "js-cookie";
 import { ApiRoutes } from "@/services/constants";
 import Link from "next/link";
@@ -16,7 +16,7 @@ type LoginFormProps = {
 };
 
 interface Course {
-  id: number;
+  id: string | number;
   name: string;
   code: string;
   description?: string;
@@ -37,7 +37,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ type }) => {
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.id]: e.target.value });
+    const { id, value } = e.target;
+    setFormData({ ...formData, [id]: value });
   };
 
   // Buscar cursos disponíveis quando o componente for montado (apenas para registro)
@@ -51,6 +52,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ type }) => {
     try {
       setLoading(true);
       const response = await axios.get(ApiRoutes.COURSES);
+      
       setCourses(response.data);
     } catch (error) {
       console.error("Erro ao buscar cursos:", error);
@@ -94,15 +96,23 @@ const LoginForm: React.FC<LoginFormProps> = ({ type }) => {
     
     try {
       setLoading(true);
-      await axios.post(ApiRoutes.USERS, {
+      
+      // Converter o índice de volta para o ID real do curso
+      const courseIndex = parseInt(formData.course_id);
+      const selectedCourse = courses[courseIndex];
+      const realCourseId = selectedCourse?.id;
+      
+      const payload = {
         user: {
           name: formData.name,
           email: formData.email,
           password: formData.password,
-          course_id: parseInt(formData.course_id),
+          course_id: realCourseId,
           role: parseInt(formData.role),
         },
-      });
+      };
+      
+      await axios.post(ApiRoutes.USERS, payload);
       toast.success("Cadastro realizado! Redirecionando...");
       router.push("/login");
     } catch (error: any) {
@@ -198,8 +208,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ type }) => {
                     disabled={loading}
                   >
                     <option value="">Selecione um curso</option>
-                    {courses.map((course) => (
-                      <option key={course.id} value={course.id}>
+                    {courses.map((course, index) => (
+                      <option key={course.id} value={index.toString()}>
                         {course.code} - {course.name}
                       </option>
                     ))}

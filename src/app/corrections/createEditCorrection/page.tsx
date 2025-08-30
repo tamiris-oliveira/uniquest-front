@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "@/services/axiosConfig";
 import { useAuth } from "@/context/authContext";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";

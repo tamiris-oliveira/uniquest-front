@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState, useCallback } from "react";
 import { useAuth } from "@/context/authContext";
-import axios from "axios";
+import axios from "@/services/axiosConfig";
 import ApiRoutes from "@/services/constants";
 import { toast } from "react-toastify";
 import { useDropzone } from "react-dropzone";

@@ -9,7 +9,7 @@ import Link from "next/link";
 import Button from "@/components/main/button";
 import { ConfirmToast } from "@/components/main/confirmToast";
 import "./simulation.css";
-import axios from "axios";
+import axios from "@/services/axiosConfig";
 import ApiRoutes from "@/services/constants";
 import { toast } from "react-toastify";
 import { format } from "date-fns"; 

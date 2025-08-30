@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "@/services/axiosConfig";
 import { Question } from "@/types/types";
 import { ApiRoutes } from "@/services/constants";
 import { toast } from "react-toastify";
@@ -10,9 +10,9 @@ import "./questionSelectModal.css";
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (selectedIds: number[]) => void;
+  onSave: (selectedIds: (string | number)[]) => void;
   token: string;
-  selectedQuestionIds?: number[];
+  selectedQuestionIds?: (string | number)[];
 }
 
 const QuestionSelectModal: React.FC<Props> = ({
@@ -23,9 +23,9 @@ const QuestionSelectModal: React.FC<Props> = ({
   selectedQuestionIds,
 }) => {
   const [questions, setQuestions] = useState<Question[]>([]);
-  const [subjects, setSubjects] = useState<{ id: number; name: string }[]>([]);
+  const [subjects, setSubjects] = useState<{ id: string | number; name: string }[]>([]);
 
-  const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const [selectedIds, setSelectedIds] = useState<(string | number)[]>([]);
 
   useEffect(() => {
     if (isOpen) {

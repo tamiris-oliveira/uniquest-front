@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import withAuth from "@/context/withAuth";
-import axios from "axios";
+import axios from "@/services/axiosConfig";
 import { useAuth } from "@/context/authContext";
 import Button from "@/components/main/button";
 import { ApiRoutes } from "@/services/constants";
@@ -15,7 +15,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "./editSimulation.css";
 
 interface Group {
-  id: number;
+  id: string | number;
   name: string;
 }
 
@@ -34,9 +34,9 @@ const CreateEditSimulation: React.FC = () => {
     question_ids: [],
   });  
   const [groups, setGroups] = useState<Group[]>([]);
-  const [selectedGroupIds, setSelectedGroupIds] = useState<number[]>([]);
+  const [selectedGroupIds, setSelectedGroupIds] = useState<(string | number)[]>([]);
   const [isModalOpen, setModalOpen] = useState(false);
-  const [selectedQuestionIds, setSelectedQuestionIds] = useState<number[]>([]);
+  const [selectedQuestionIds, setSelectedQuestionIds] = useState<(string | number)[]>([]);
   const [questions, setQuestions] = useState<Simulation["questions"]>([]);
   const groupOptions = groups.map(g => ({ value: g.id, label: g.name }));
   
@@ -90,7 +90,7 @@ const CreateEditSimulation: React.FC = () => {
   };
   
 
-const handleSaveSimulation = async (questionIds: number[]) => {
+const handleSaveSimulation = async (questionIds: (string | number)[]) => {
   if (!form.title.trim()) {
     toast.warn("Por favor, insira um nome para o simulado.");
     return;
@@ -147,7 +147,7 @@ const handleSaveSimulation = async (questionIds: number[]) => {
     return format(date, "yyyy-MM-dd'T'HH:mm");
   }
 
-  const handleSelectQuestionsAndSave = (ids: number[]) => {
+  const handleSelectQuestionsAndSave = (ids: (string | number)[]) => {
   setSelectedQuestionIds(ids);
   handleSaveSimulation(ids);
   };
@@ -208,7 +208,7 @@ const handleSaveSimulation = async (questionIds: number[]) => {
         />
         </div>
 
-        <label htmlFor="simulation-time_limit">Tempo de realização do simulado (segundos):</label>
+        <label htmlFor="simulation-time_limit">Tempo de realização do simulado (minutos):</label>
       <div className="input-button-container">
         <input
           id="simulation-time_limit"

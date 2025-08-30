@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "@/context/authContext";
 import withAuth from "@/context/withAuth";
-import axios from "axios";
+import axios from "@/services/axiosConfig";
 import { ApiRoutes } from "@/services/constants";
 import Button from "@/components/main/button";
 import { toast } from "react-toastify";
@@ -15,7 +15,7 @@ import "./question.css";
 const QuestionsPage: React.FC = () => {
   const { token, user } = useAuth();
   const [questionsBySubject, setQuestionsBySubject] = useState<Record<string, Question[]>>({});
-  const [subjects, setSubjects] = useState<{ id: number; name: string }[]>([]);
+  const [subjects, setSubjects] = useState<{ id: string | number; name: string }[]>([]);
 
   useEffect(() => {
     if (token) {
@@ -26,7 +26,7 @@ const QuestionsPage: React.FC = () => {
 
   const fetchSubjects = async () => {
     try {
-      const { data } = await axios.get<{ id: number; name: string }[]>(ApiRoutes.SUBJECTS, {
+      const { data } = await axios.get<{ id: string | number; name: string }[]>(ApiRoutes.SUBJECTS, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setSubjects(data);
@@ -60,7 +60,7 @@ const QuestionsPage: React.FC = () => {
     }
   }, [subjects]);
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: string | number) => {
    ConfirmToast({
          message: "Tem certeza que deseja excluir a questão?",
          onConfirm: async () => {

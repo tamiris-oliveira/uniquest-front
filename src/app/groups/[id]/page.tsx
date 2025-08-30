@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useAuth } from "@/context/authContext";
-import axios from "axios";
+import axios from "@/services/axiosConfig";
 import { ApiRoutes } from "@/services/constants";
 import { toast } from "react-toastify";
 import {Copy } from "lucide-react";
@@ -45,25 +45,11 @@ const ViewGroup = () => {
     }
   };
 
-   const handleCopyInviteCode = () => {
-      navigator.clipboard.writeText(inviteCode);
-      toast.info("Código de convite copiado!");
-    };
-
   return (
     <div className="view-group-container">
       <h2>Detalhes do Grupo</h2>
 
       <p><strong>Nome do grupo:</strong> {groupName}</p>
-
-       {inviteCode !== "null" && (
-        <div className="invite-code-container">
-          <p>Código de convite: <strong>{inviteCode}</strong></p>
-          <button className="copy-button" onClick={handleCopyInviteCode}>
-            <Copy size={16} /> Copiar
-          </button>
-        </div>
-      )}
 
       <h3>Participantes do grupo:</h3>
       <ul className="participants-list">

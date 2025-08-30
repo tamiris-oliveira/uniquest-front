@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import withAuth from "@/context/withAuth";
-import axios from "axios";
+import axios from "@/services/axiosConfig";
 import { useAuth } from "@/context/authContext";
 import { ArrowLeft } from "lucide-react";
 import Button from "@/components/main/button";

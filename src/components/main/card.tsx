@@ -4,6 +4,9 @@ import { Edit, Trash2 } from "lucide-react";
 import { useAuth } from "@/context/authContext";
 import { ConfirmToast } from "./confirmToast";
 import { useRouter } from "next/navigation";
+import axios from "@/services/axiosConfig";
+import ApiRoutes from "@/services/constants";
+import { toast } from "react-toastify";
 import "./card.css";
 
 interface Item {
@@ -13,13 +16,13 @@ interface Item {
 interface CardProps {
   items: Item[];
   route: string;
-  onEdit?: (id: number) => void;
-  onDelete?: (id: number) => void;
+  onEdit?: (id: string | number) => void;
+  onDelete?: (id: string | number) => void;
   linkOnClick?: boolean;
 }
 
 const Card = ({ items, route, onEdit, onDelete, linkOnClick = true }: CardProps) => {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const router = useRouter();
   const [renderItems, setRenderItems] = useState<Item[]>([]);
 
@@ -59,13 +62,41 @@ const Card = ({ items, route, onEdit, onDelete, linkOnClick = true }: CardProps)
     }
   }, [items, route]);
 
-  const handleTakeSimulation = (simulationId: number) => {
-    ConfirmToast({
-      message: "Tem certeza que deseja iniciar o simulado? Isso contará como uma tentativa.",
-      onConfirm: async () => {
-        router.push(`/simulations/${simulationId}/take`);
-      },
-    });
+  const handleTakeSimulation = async (simulationId: string | number) => {
+    try {
+      // Buscar dados da simulação para verificar tentativas
+      const { data: simulation } = await axios.get(
+        ApiRoutes.SIMULATION(simulationId),
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      // Buscar tentativas do usuário para esta simulação
+      const { data: attempts } = await axios.get(
+        `${ApiRoutes.ATTEMPTS}?simulation_id=${simulationId}&user_id=${user?.id}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      const userAttempts = attempts.length;
+      const maxAttempts = simulation.max_attempts || 1;
+
+      if (userAttempts >= maxAttempts) {
+        toast.error(`Você já atingiu o limite de ${maxAttempts} tentativa(s) para este simulado.`);
+        return;
+      }
+
+      const remainingAttempts = maxAttempts - userAttempts;
+      const attemptText = remainingAttempts === 1 ? "tentativa" : "tentativas";
+      
+      ConfirmToast({
+        message: `Tem certeza que deseja iniciar o simulado? Isso contará como uma tentativa. Você tem ${remainingAttempts} ${attemptText} restante(s).`,
+        onConfirm: async () => {
+          router.push(`/simulations/${simulationId}/take`);
+        },
+      });
+    } catch (error) {
+      console.error("Erro ao verificar tentativas:", error);
+      toast.error("Erro ao verificar tentativas. Tente novamente.");
+    }
   };
 
   return (

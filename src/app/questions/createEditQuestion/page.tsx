@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import axios from "axios";
+import axios from "@/services/axiosConfig";
 import { useAuth } from "@/context/authContext";
 import Button from "@/components/main/button";
 import { ApiRoutes } from "@/services/constants";
@@ -21,8 +21,8 @@ const CreateEditQuestion: React.FC = () => {
   const [questionType, setQuestionType] = useState(questionTypes[0].value);
   const [justification, setJustification] = useState("");
   const [alternatives, setAlternatives] = useState<Alternative[]>([]);
-  const [subjects, setSubjects] = useState<{ id: number; name: string }[]>([]);
-  const [subjectId, setSubjectId] = useState<number | null>(null);
+  const [subjects, setSubjects] = useState<{ id: string | number; name: string }[]>([]);
+  const [subjectId, setSubjectId] = useState<string | number | null>(null);
   const [newSubjectName, setNewSubjectName] = useState("");
   const [loading, setLoading] = useState(false);
 

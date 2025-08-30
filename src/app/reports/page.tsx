@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "@/context/authContext";
 import withAuth from "@/context/withAuth";
-import axios from "axios";
+import axios from "@/services/axiosConfig";
 import ApiRoutes from "@/services/constants";
 import { Bar, Line } from "react-chartjs-2";
 import {

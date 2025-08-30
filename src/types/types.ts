@@ -1,11 +1,11 @@
 export interface Group {
-  id: number;
+  id: string | number;
   name: string;
   invite_code: string;
 }
 
 export interface User {
-  id: number;
+  id: string | number;
   name: string;
   email: string;
   role: number;
@@ -15,24 +15,24 @@ export interface User {
 }
 
 export interface Question {
-  id: number;
+  id: string | number;
   statement: string;
   question_type: string;
   justification: string;
   user: User;
-  subject_id: number;
+  subject_id: string | number;
   alternatives: Alternative[];
 }
 
 export interface Simulation {
-  id: number;              
+  id: string | number;              
   title: string;
   description: string;
   creation_date: string; 
   deadline: string;
   time_limit: number, 
   max_attempts: number,
-  user_id: number;
+  user_id: string | number;
   groups: Group[];         
   questions: Question[];   
 }
@@ -45,9 +45,9 @@ export interface SimulationPayload {
     deadline: string; 
     time_limit: number, 
     max_attempts: number,
-    user_id: number;
-    group_ids: number[];
-    question_ids: number[];   
+    user_id: string | number;
+    group_ids: (string | number)[];
+    question_ids: (string | number)[];   
   };
 }
 
@@ -57,58 +57,58 @@ export interface SimulationForm {
   deadline: string;
   max_attempts: number;
   time_limit: number;
-  user_id: number;
-  group_ids: number[];
-  question_ids: number[];
+  user_id: string | number;
+  group_ids: (string | number)[];
+  question_ids: (string | number)[];
 }
 
 export interface Alternative {
-  id?: number;
+  id?: string | number;
   text: string;
   correct: boolean;
-  question_id?: number;
+  question_id?: string | number;
   created_at?: string;
   updated_at?: string;
 }
 
 export interface Subject {
-  id: number;
+  id: string | number;
   name: string;
 }
 
 export interface Attempt {
-  id: number;
+  id: string | number;
   attempt_date: string; 
   final_grade: number;
-  simulation_id: number;
-  user_id: number;
+  simulation_id: string | number;
+  user_id: string | number;
   created_at: string;
   updated_at: string;
 }
 
 export interface AttemptWithAnswers {
-  id: number;
+  id: string | number;
   attempt_date: string;
 
   user: User;
 
   simulation: {
-    id: number;
+    id: string | number;
     title: string;
     deadline: string;
   };
 
   answers: {
-    id: number;
+    id: string | number;
     student_answer: string;
     correct: boolean | null;
 
     question: {
-      id: number;
+      id: string | number;
       statement: string;
       question_type: "Objetiva" | "Discursiva";
       alternatives: {
-        id: number;
+        id: string | number;
         text: string;
         correct: boolean;
       }[];
@@ -117,10 +117,10 @@ export interface AttemptWithAnswers {
 }
 
 export type SimulationWithAttempts = {
-  id: number;
+  id: string | number;
   title: string;
   attempts: {
-    id: number;
+    id: string | number;
     user: User;
     attempt_date: string;
     answers: Answer[];
@@ -129,40 +129,40 @@ export type SimulationWithAttempts = {
 
 
 export interface Answer {
-  id: number;
+  id: string | number;
   student_answer: string;
   correct: boolean | null;
-  question_id: number;
+  question_id: string | number;
   question: Question,
-  attempt_id: number;
+  attempt_id: string | number;
   created_at: string;
   updated_at: string;
   corrections: Correction[];
 }
 
 export interface AnswerData {
-  id: number;
+  id: string | number;
   student_answer: string;
   attempt: {
     attempt_date: string;
     simulation: {
-      id: number;
+      id: string | number;
       title: string;
     };
     user: {
-      id: number;
+      id: string | number;
       name: string;
     };
   };
 }
 
 export interface SubmitAnswer {
-  question_id: number;
+  question_id: string | number;
   student_answer: string;
 }
 
 export interface Correction {
-  id: number;
+  id: string | number;
   grade: number | null;
   feedback: string | null;
   created_at: string;
@@ -195,7 +195,7 @@ export interface SubjectReport {
 
 
 export interface GroupReport {
-  group_id: number;
+  group_id: string | number;
   group_name: string;
   students_count: number;
   total_attempts: number;
@@ -204,12 +204,12 @@ export interface GroupReport {
   total_manual_grade: number;
   total_grade: number;
   ranking: {
-    user_id: number;
+    user_id: string | number;
     name: string;
     avg_grade: number;
   }[];
   most_difficult_questions: {
-    question_id: number;
+    question_id: string | number;
     statement: string;
     correct: number;
     incorrect: number;

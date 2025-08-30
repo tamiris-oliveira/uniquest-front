@@ -5,20 +5,20 @@ import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
 
 interface Course {
-  id: number;
+  id: string | number;
   name: string;
   code: string;
 }
 
 interface User {
-  id: number;
+  id: string;
   name: string;
   email: string;
   role: number;
   avatar?: string;
   created_at?: string;
   course?: Course;
-  course_id?: number;
+  course_id?: string | number;
 }
 
 interface AuthContextType {
@@ -71,8 +71,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       sameSite: 'lax',
       secure: process.env.NODE_ENV === 'production',
     });
-    localStorage.setItem('user', JSON.stringify(userData));
-    setUser(userData);
+    
+    // Os IDs já vêm como strings do interceptor axios, mas garantimos aqui também
+    const userWithStringIds = {
+      ...userData,
+      id: String(userData.id),
+      course_id: userData.course_id ? String(userData.course_id) : undefined,
+      course: userData.course ? {
+        ...userData.course,
+        id: String(userData.course.id)
+      } : undefined
+    };
+    
+    localStorage.setItem('user', JSON.stringify(userWithStringIds));
+    setUser(userWithStringIds);
     setToken(token);
     setIsAuthenticated(true);
     router.push('/');
@@ -90,8 +102,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const updateUserData = (newData: Partial<User>) => {
     if (user) {
       const updatedUser = { ...user, ...newData };
-      setUser(updatedUser);
-      localStorage.setItem('user', JSON.stringify(updatedUser));
+      
+      // Garantir que IDs sejam strings para evitar perda de precisão
+      const userWithStringIds = {
+        ...updatedUser,
+        id: String(updatedUser.id),
+        course_id: updatedUser.course_id ? String(updatedUser.course_id) : undefined,
+        course: updatedUser.course ? {
+          ...updatedUser.course,
+          id: String(updatedUser.course.id)
+        } : undefined
+      };
+      
+      setUser(userWithStringIds);
+      localStorage.setItem('user', JSON.stringify(userWithStringIds));
     }
   };
 
