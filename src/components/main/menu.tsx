@@ -67,10 +67,10 @@ const Menu = () => {
                             <li><Link href="/questions" onClick={closeMenu}>Questões</Link></li>
                         </>
                     )}
-                    {(user?.role === 2 || (user?.role === 1 && user?.course) || user?.role === 3) && (
+                    {(user?.role === 2 || user?.role === 3 || (user?.role === 1 && user?.course)) && (
                         <li><Link href="/courses" onClick={closeMenu}>Cursos</Link></li>
                     )}
-                    {user?.role === 2 && (
+                    {user?.role === 3 && (
                         <li><Link href="/approvals" onClick={closeMenu}>Aprovações</Link></li>
                     )}
                 </ul>

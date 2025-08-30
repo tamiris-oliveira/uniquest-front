@@ -16,7 +16,7 @@ const CreateEditCorrectionContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const answerId = searchParams.get("answer_id");
-  const isReadOnly = user?.role !== 1;
+  const isReadOnly = user?.role === 0;
 
   const [answer, setAnswer] = useState<Answer | null>(null);
   const [correction, setCorrection] = useState<Correction | null>(null);

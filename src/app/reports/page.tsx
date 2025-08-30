@@ -237,7 +237,7 @@ const ReportsPage = () => {
           <label>
             Tipo:
             <select value={reportType} onChange={(e) => handleReportTypeChange(e.target.value as ReportType)} style={{ marginLeft: 10 }}>
-              {user?.role !== 1 ? (
+              {user?.role === 0 ? (
                 <>
                   <option value="student_evolution">Evolução Pessoal</option>
                   <option value="student_subject">Desempenho por Matéria</option>

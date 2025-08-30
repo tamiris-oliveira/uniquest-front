@@ -119,7 +119,7 @@ const CoursesPage = () => {
           email: adminForm.email.trim(),
           password: adminForm.password,
           course_id: selectedCourse.id,
-          role: 1, // Admin do curso
+          role: 2, // Admin do curso
         },
       };
       
@@ -190,7 +190,7 @@ const CoursesPage = () => {
                   <h3>{course.name}</h3>
                   <span className="course-code">{course.code}</span>
                 </div>
-                {user?.role === 2 && (
+                {user?.role === 3 && (
                   <div className="course-actions">
                     <button
                       className="edit-button"

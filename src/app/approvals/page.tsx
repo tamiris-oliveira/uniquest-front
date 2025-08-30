@@ -28,7 +28,7 @@ const ApprovalsPage = () => {
   const [filter, setFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('pending');
 
   useEffect(() => {
-    if (token && user?.role === 2) {
+    if (token && user?.role === 3) {
       fetchPendingUsers();
     }
   }, [token, user]);
@@ -103,12 +103,13 @@ const ApprovalsPage = () => {
     const roles = {
       0: 'Estudante',
       1: 'Professor',
-      2: 'Superadmin'
+      2: 'Admin',
+      3: 'Superadmin'
     };
     return roles[role as keyof typeof roles] || 'Desconhecido';
   };
 
-  if (user?.role !== 2) {
+  if (user?.role !== 3) {
     return (
       <div className="approvals-container">
         <div className="access-denied">

@@ -86,7 +86,7 @@ const AnswersPage = () => {
           <span>Questão</span>
           <span>Resposta do Aluno</span>
           <span>Nota</span>
-          {user?.role == 1 && (<span>Corrigir</span>)}
+          {(user?.role === 1 || user?.role === 2 || user?.role === 3) && (<span>Corrigir</span>)}
         </div>
 
         {attempt.answers.map((answer) => (
