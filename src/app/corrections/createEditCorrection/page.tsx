@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import axios from "@/services/axiosConfig";
 import { useAuth } from "@/context/authContext";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -11,8 +11,7 @@ import "./correctionEdit.css";
 import ApiRoutes from "@/services/constants";
 import Spinner from "@/components/main/spinner";
 
-
-const CreateEditCorrection = () => {
+const CreateEditCorrectionContent = () => {
   const { user, token } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -168,6 +167,14 @@ const CreateEditCorrection = () => {
         </div>
       </section>
     </div>
+  );
+};
+
+const CreateEditCorrection = () => {
+  return (
+    <Suspense fallback={<Spinner />}>
+      <CreateEditCorrectionContent />
+    </Suspense>
   );
 };
 

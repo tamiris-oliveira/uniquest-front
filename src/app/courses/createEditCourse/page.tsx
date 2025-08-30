@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, Suspense } from "react";
 import withAuth from "@/context/withAuth";
 import axios from "@/services/axiosConfig";
 import { useAuth } from "@/context/authContext";
@@ -10,8 +10,9 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSearchParams, useRouter } from "next/navigation";
 import "./editCourse.css";
+import Spinner from "@/components/main/spinner";
 
-const CreateEditCourse = () => {
+const CreateEditCourseContent = () => {
   const { user, token } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -177,6 +178,14 @@ const CreateEditCourse = () => {
         </div>
       </div>
     </div>
+  );
+};
+
+const CreateEditCourse = () => {
+  return (
+    <Suspense fallback={<Spinner />}>
+      <CreateEditCourseContent />
+    </Suspense>
   );
 };
 

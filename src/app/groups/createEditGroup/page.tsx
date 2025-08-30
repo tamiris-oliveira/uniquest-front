@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import withAuth from "@/context/withAuth";
 import axios from "@/services/axiosConfig";
 import { useAuth } from "@/context/authContext";
@@ -11,8 +11,9 @@ import "react-toastify/dist/ReactToastify.css";
 import { useSearchParams } from "next/navigation"; 
 import "./editGroup.css";
 import { avatarPlaceholder } from "@/types/types";
+import Spinner from "@/components/main/spinner";
 
-const CreateEditGroup = () => {
+const CreateEditGroupContent = () => {
   const { user, isAuthenticated, token } = useAuth();
   const searchParams = useSearchParams();
   const groupId = searchParams.get("id");
@@ -189,6 +190,14 @@ const CreateEditGroup = () => {
           ))}
       </div>
     </div>
+  );
+};
+
+const CreateEditGroup = () => {
+  return (
+    <Suspense fallback={<Spinner />}>
+      <CreateEditGroupContent />
+    </Suspense>
   );
 };
 

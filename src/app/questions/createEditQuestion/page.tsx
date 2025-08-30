@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import axios from "@/services/axiosConfig";
 import { useAuth } from "@/context/authContext";
@@ -11,8 +11,9 @@ import { Trash2, CheckCircle, Circle } from "lucide-react";
 import { Alternative, questionTypes } from "@/types/types";
 import "react-toastify/dist/ReactToastify.css";
 import "./editQuestion.css";
+import Spinner from "@/components/main/spinner";
 
-const CreateEditQuestion: React.FC = () => {
+const CreateEditQuestionContent: React.FC = () => {
   const { user, token } = useAuth();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -284,6 +285,14 @@ if (!subjectId && newSubjectName.trim()) {
         </>
       )}
     </div>
+  );
+};
+
+const CreateEditQuestion: React.FC = () => {
+  return (
+    <Suspense fallback={<Spinner />}>
+      <CreateEditQuestionContent />
+    </Suspense>
   );
 };
 

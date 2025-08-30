@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import withAuth from "@/context/withAuth";
 import axios from "@/services/axiosConfig";
 import { useAuth } from "@/context/authContext";
@@ -13,13 +13,14 @@ import { format, parseISO, set } from "date-fns";
 import QuestionSelectModal from "@/components/main/questionSelectModal";
 import "react-toastify/dist/ReactToastify.css";
 import "./editSimulation.css";
+import Spinner from "@/components/main/spinner";
 
 interface Group {
   id: string | number;
   name: string;
 }
 
-const CreateEditSimulation: React.FC = () => {
+const CreateEditSimulationContent: React.FC = () => {
   const { user, token } = useAuth();
   const searchParams = useSearchParams();
   const simulationId = searchParams.get("id");
@@ -290,6 +291,14 @@ const handleSaveSimulation = async (questionIds: (string | number)[]) => {
       selectedQuestionIds={selectedQuestionIds}
     />
     </div>
+  );
+};
+
+const CreateEditSimulation: React.FC = () => {
+  return (
+    <Suspense fallback={<Spinner />}>
+      <CreateEditSimulationContent />
+    </Suspense>
   );
 };
 
