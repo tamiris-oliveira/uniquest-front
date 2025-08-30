@@ -196,9 +196,13 @@ const Profile = () => {
           style={{ cursor: "pointer" }}
         />
         <div className="avatar-actions">
-          <Pencil className="icon-button" onClick={open} title="Alterar foto" />
+          <button className="icon-button" onClick={open} title="Alterar foto">
+            <Pencil size={16} />
+          </button>
           {formData.user.avatar && (
-            <Trash2 className="icon-button danger" onClick={handleRemovePhoto} title="Remover foto" />
+            <button className="icon-button danger" onClick={handleRemovePhoto} title="Remover foto">
+              <Trash2 size={16} />
+            </button>
           )}
         </div>
         {isDragActive && (

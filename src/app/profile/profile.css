@@ -79,6 +79,11 @@
   cursor: pointer;
   width: 30px;
   height: 30px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
 }
 
 .icon-button:hover {
