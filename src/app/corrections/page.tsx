@@ -48,7 +48,7 @@ const AnswersPage = () => {
     }
   };
 
-  const handleCorrection = (answerId: number) => {
+  const handleCorrection = (answerId: string | number) => {
     router.push(`/corrections/createEditCorrection?answer_id=${answerId}`);
   };
 

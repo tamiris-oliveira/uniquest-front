@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import withAuth from "@/context/withAuth";
 import axios from "@/services/axiosConfig";
 import { useAuth } from "@/context/authContext";
@@ -23,20 +23,7 @@ const CreateEditCourse = () => {
   const [courseDescription, setCourseDescription] = useState("");
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    // Verificar se o usuário tem permissão
-    if (user && user.role !== 2) {
-      toast.error("Acesso negado. Apenas superadmins podem gerenciar cursos.");
-      router.push("/courses");
-      return;
-    }
-
-    if (token && courseId && isEdit) {
-      fetchCourse();
-    }
-  }, [token, courseId, isEdit, user, router]);
-
-  const fetchCourse = async () => {
+  const fetchCourse = useCallback(async () => {
     try {
       setLoading(true);
       const response = await axios.get(ApiRoutes.COURSE(courseId!), {
@@ -53,7 +40,20 @@ const CreateEditCourse = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [token, courseId]);
+
+  useEffect(() => {
+    // Verificar se o usuário tem permissão
+    if (user && user.role !== 2) {
+      toast.error("Acesso negado. Apenas superadmins podem gerenciar cursos.");
+      router.push("/courses");
+      return;
+    }
+
+    if (token && courseId && isEdit) {
+      fetchCourse();
+    }
+  }, [token, courseId, isEdit, user, router, fetchCourse]);
 
   const handleSaveCourse = async () => {
     if (!courseName.trim()) {
@@ -89,9 +89,10 @@ const CreateEditCourse = () => {
         toast.success("Curso criado com sucesso!");
         router.push(`/courses/createEditCourse?edit=true&id=${data.id}`);
       }
-    } catch (error: any) {
-      if (error.response?.data?.errors) {
-        const errors = error.response.data.errors;
+    } catch (error: unknown) {
+      const err = error as any;
+      if (err.response?.data?.errors) {
+        const errors = err.response.data.errors;
         if (errors.code && errors.code.includes("has already been taken")) {
           toast.error("Este código de curso já está em uso.");
         } else {

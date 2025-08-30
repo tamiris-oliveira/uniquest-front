@@ -12,6 +12,7 @@ axios.defaults.transformResponse = [(data) => {
       
       return JSON.parse(processedJson);
     } catch (error) {
+      console.error('JSON parsing error:', error);
       // Fallback para parsing normal
       try {
         return JSON.parse(data);

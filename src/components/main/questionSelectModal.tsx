@@ -58,11 +58,11 @@ const QuestionSelectModal: React.FC<Props> = ({
     }
   };
 
-  const markAsSelected = (id: number) => {
+  const markAsSelected = (id: string | number) => {
     setSelectedIds((prev) => (prev.includes(id) ? prev : [...prev, id]));
   };
 
-  const markAsDeselected = (id: number) => {
+  const markAsDeselected = (id: string | number) => {
     setSelectedIds((prev) => prev.filter((qid) => qid !== id));
   };
 

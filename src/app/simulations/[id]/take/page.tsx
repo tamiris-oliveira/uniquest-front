@@ -15,7 +15,7 @@ export default function TakeSimulationPage() {
   const router = useRouter();
   const { user, token } = useAuth();
   const [questions, setQuestions] = useState<Question[]>([]);
-  const [answers, setAnswers] = useState<Record<number, string>>({});
+  const [answers, setAnswers] = useState<Record<string | number, string>>({});
   const [loading, setLoading] = useState(true);
   const [timer, setTimer] = useState<number>(0);
   const [simulation, setSimulation] = useState<Simulation | null>(null);
@@ -73,7 +73,7 @@ export default function TakeSimulationPage() {
     return `${min.toString().padStart(2, "0")}:${sec.toString().padStart(2, "0")}`;
   };
 
-  const handleAnswerChange = (questionId: number, value: string) => {
+  const handleAnswerChange = (questionId: string | number, value: string) => {
     setAnswers(prev => ({ ...prev, [questionId]: value }));
   };
 

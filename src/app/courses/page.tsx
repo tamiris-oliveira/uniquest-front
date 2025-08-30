@@ -1,9 +1,9 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import withAuth from "@/context/withAuth";
 import axios from "@/services/axiosConfig";
 import { useAuth } from "@/context/authContext";
-import { Plus, Edit, Users, BookOpen } from "lucide-react";
+import { Edit, Users, BookOpen } from "lucide-react";
 import Button from "@/components/main/button";
 import { ApiRoutes } from "@/services/constants";
 import { toast } from "react-toastify";
@@ -27,13 +27,7 @@ const CoursesPage = () => {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
 
-  useEffect(() => {
-    if (token) {
-      fetchCourses();
-    }
-  }, [token]);
-
-  const fetchCourses = async () => {
+  const fetchCourses = useCallback(async () => {
     try {
       setLoading(true);
       const response = await axios.get(ApiRoutes.COURSES, {
@@ -46,7 +40,13 @@ const CoursesPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [token]);
+
+  useEffect(() => {
+    if (token) {
+      fetchCourses();
+    }
+  }, [token, fetchCourses]);
 
   const handleEditCourse = (id: string) => {
     router.push(`/courses/createEditCourse?edit=true&id=${id}`);

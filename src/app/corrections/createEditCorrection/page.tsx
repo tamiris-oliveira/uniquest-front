@@ -71,7 +71,7 @@ const CreateEditCorrection = () => {
     setLoading(true);
 
     try {
-      if (correction.id && correction.id > 0) {
+      if (correction.id && Number(correction.id) > 0) {
         await axios.put<Correction>(ApiRoutes.CORRECTION(correction.id),
           { correction },
           { headers: { Authorization: `Bearer ${token}` } }

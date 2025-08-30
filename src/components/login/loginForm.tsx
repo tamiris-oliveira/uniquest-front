@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/authContext";
 import axios from "@/services/axiosConfig";
-import Cookies from "js-cookie";
+// import Cookies from "js-cookie"; // Unused import
 import { ApiRoutes } from "@/services/constants";
 import Link from "next/link";
 import { toast } from "react-toastify";
@@ -76,6 +76,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ type }) => {
 
       toast.success("Login realizado com sucesso!");
     } catch (error) {
+      console.error("Login error:", error);
       toast.error("Credenciais inválidas");
     }
   };
@@ -115,10 +116,10 @@ const LoginForm: React.FC<LoginFormProps> = ({ type }) => {
       await axios.post(ApiRoutes.USERS, payload);
       toast.success("Cadastro realizado! Redirecionando...");
       router.push("/login");
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Erro no cadastro:", error);
-      const errorMessage = error.response?.data?.errors?.[0] || 
-                          error.response?.data?.error || 
+      const errorMessage = (error as any)?.response?.data?.errors?.[0] || 
+                          (error as any)?.response?.data?.error || 
                           "Erro ao registrar. Tente novamente.";
       toast.error(errorMessage);
     } finally {

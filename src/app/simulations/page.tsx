@@ -46,11 +46,11 @@ const Simulations = () => {
     }
   };
 
-   const handleEdit = (id: number) => {
+   const handleEdit = (id: string | number) => {
     window.location.href = `/simulations/createEditSimulation?edit=true&id=${id}`;
   };
 
-  const handleDelete = (id: number) => {
+  const handleDelete = (id: string | number) => {
     ConfirmToast({
       message: "Tem certeza que deseja excluir o simulado?",
       onConfirm: async () => {
