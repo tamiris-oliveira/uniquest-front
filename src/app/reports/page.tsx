@@ -58,11 +58,11 @@ const ReportsPage = () => {
   const [reportType, setReportType] = useState<ReportType>(defaultReportType);
   const [period, setPeriod] = useState({ start: "", end: "" });
   
-  const [groupsList, setGroupsList] = useState<{ id: number; name: string }[]>([]);
-  const [simulationsList, setSimulationsList] = useState<{ id: number; title: string }[]>([]);
+  const [groupsList, setGroupsList] = useState<{ id: string | number; name: string }[]>([]);
+  const [simulationsList, setSimulationsList] = useState<{ id: string | number; title: string }[]>([]);
   
-  const [selectedGroup, setSelectedGroup] = useState<number | "">("");
-  const [selectedSimulation, setSelectedSimulation] = useState<number | "">("");
+  const [selectedGroup, setSelectedGroup] = useState<string | number | "">("");
+  const [selectedSimulation, setSelectedSimulation] = useState<string | number | "">("");
 
   const [isLoading, setIsLoading] = useState(false);
   const [chartData, setChartData] = useState<ChartData | null>(null);
@@ -261,7 +261,7 @@ const ReportsPage = () => {
           {reportType === "teacher_group_summary" && (
             <label>
               Turma:
-              <select value={selectedGroup} onChange={(e) => setSelectedGroup(Number(e.target.value))} style={{ marginLeft: 10 }}>
+              <select value={selectedGroup} onChange={(e) => setSelectedGroup(e.target.value || "")} style={{ marginLeft: 10 }}>
                 <option value="">Selecione</option>
                 {groupsList.map((grp) => (<option key={grp.id} value={grp.id}>{grp.name}</option>))}
               </select>
@@ -272,7 +272,7 @@ const ReportsPage = () => {
           {reportType === "teacher_simulation_details" && (
             <label>
               Simulado:
-              <select value={selectedSimulation} onChange={(e) => setSelectedSimulation(Number(e.target.value))} style={{ marginLeft: 10 }}>
+              <select value={selectedSimulation} onChange={(e) => setSelectedSimulation(e.target.value || "")} style={{ marginLeft: 10 }}>
                 <option value="">Selecione</option>
                 {simulationsList.map((sim) => (<option key={sim.id} value={sim.id}>{sim.title}</option>))}
               </select>

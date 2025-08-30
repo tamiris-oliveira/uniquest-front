@@ -50,7 +50,7 @@ const CreateEditQuestion: React.FC = () => {
     try {
       setLoading(true);
       const { data } = await axios.get<Question & { alternatives: Alternative[] }>(
-        ApiRoutes.QUESTION(Number(questionId)),
+        ApiRoutes.QUESTION(questionId),
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setStatement(data.statement);
@@ -138,7 +138,7 @@ if (!subjectId && newSubjectName.trim()) {
     try {
       setLoading(true);
       if (questionId) {
-        await axios.put(ApiRoutes.QUESTION(Number(questionId)), payload, {
+        await axios.put(ApiRoutes.QUESTION(questionId), payload, {
           headers: { Authorization: `Bearer ${token}` },
         });
         toast.success("Questão atualizada com sucesso!");
@@ -147,7 +147,7 @@ if (!subjectId && newSubjectName.trim()) {
           headers: { Authorization: `Bearer ${token}` },
         });
         toast.success("Questão criada com sucesso!");
-        window.location.href = `/questions/createEditQuestion?edit=true&id=${data.id}`;
+        router.push(`/questions/createEditQuestion?edit=true&id=${data.id}`);
       }
       router.push("/questions");
     } catch {
@@ -172,7 +172,7 @@ if (!subjectId && newSubjectName.trim()) {
 <select
   id="subject"
   value={subjectId ?? ""}
-  onChange={(e) => setSubjectId(Number(e.target.value))}
+  onChange={(e) => setSubjectId(e.target.value || null)}
   style={{ width: "100%", padding: 10, borderRadius: 5, border: "1px solid #ccc" }}
 >
   <option value="">Selecione uma matéria existente</option>

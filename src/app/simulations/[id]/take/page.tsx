@@ -125,7 +125,7 @@ export default function TakeSimulationPage() {
 
       const answersArray: SubmitAnswer[] = Object.entries(answers).map(
         ([questionId, studentAnswer]) => ({
-          question_id: Number(questionId),
+          question_id: questionId,
           student_answer: studentAnswer,
         })
       );
