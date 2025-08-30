@@ -15,7 +15,7 @@ const withAuth = (WrappedComponent: React.ComponentType) => {
     }, [isAuthenticated, isLoading, router]);
 
     if (isLoading) {
-      <Spinner />
+      return <Spinner />;
     }
 
     if (!isAuthenticated) {

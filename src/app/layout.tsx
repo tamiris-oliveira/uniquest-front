@@ -5,8 +5,10 @@ import Menu from "@/components/main/menu";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
+import { Suspense } from "react";
+import Spinner from "@/components/main/spinner";
 
-export default function RootLayout({
+function LayoutContent({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -35,5 +37,17 @@ export default function RootLayout({
         </body>
       </html>
     </AuthProvider>
+  );
+}
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <Suspense fallback={<Spinner />}>
+      <LayoutContent>{children}</LayoutContent>
+    </Suspense>
   );
 }
