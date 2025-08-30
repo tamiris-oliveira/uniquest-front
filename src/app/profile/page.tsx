@@ -56,19 +56,52 @@ const Profile = () => {
   // Upload da imagem e conversão para base64
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
+    if (!file) return;
+    
+    // Validar tamanho do arquivo (máximo 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("A imagem deve ter no máximo 5MB");
+      return;
+    }
+    
     const reader = new FileReader();
     reader.onload = () => {
       const base64String = reader.result?.toString() || "";
-      setFormData((prev) => ({ ...prev, avatar: base64String }));
+      setFormData((prev) => ({ 
+        ...prev, 
+        user: {
+          ...prev.user,
+          avatar: base64String 
+        }
+      }));
+    };
+    reader.onerror = () => {
+      toast.error("Erro ao processar a imagem");
     };
     reader.readAsDataURL(file);
   }, []);
 
-  const { getRootProps, getInputProps, open } = useDropzone({
+  const { getRootProps, getInputProps, open, isDragActive } = useDropzone({
     onDrop,
-    accept: { "image/*": [] },
+    accept: { 
+      "image/jpeg": [".jpg", ".jpeg"],
+      "image/png": [".png"],
+      "image/gif": [".gif"],
+      "image/webp": [".webp"]
+    },
     multiple: false,
     noClick: true,
+    maxSize: 5 * 1024 * 1024, // 5MB
+    onDropRejected: (fileRejections) => {
+      const rejection = fileRejections[0];
+      if (rejection.errors.some(e => e.code === 'file-too-large')) {
+        toast.error("A imagem deve ter no máximo 5MB");
+      } else if (rejection.errors.some(e => e.code === 'file-invalid-type')) {
+        toast.error("Formato de arquivo não suportado. Use JPG, PNG, GIF ou WebP");
+      } else {
+        toast.error("Erro ao processar o arquivo");
+      }
+    }
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -82,7 +115,13 @@ const Profile = () => {
   };
   
   const handleRemovePhoto = () => {
-    setFormData((prev) => ({ ...prev, avatar: "" }));
+    setFormData((prev) => ({ 
+      ...prev, 
+      user: {
+        ...prev.user,
+        avatar: "" 
+      }
+    }));
   };
 
   // Atualiza perfil
@@ -102,10 +141,14 @@ const Profile = () => {
         avatar: updatedUser.avatar,
       });
 
-      // Limpa campo senha após salvar
+      // Limpa campos de senha após salvar
       setFormData((prev) => ({
         ...prev,
-        password: "",
+        user: {
+          ...prev.user,
+          password: "",
+          password_confirmation: "",
+        }
       }));
     } catch (error) {
       console.error(error);
@@ -125,7 +168,7 @@ const Profile = () => {
     <div className="profile-container">
       <h2>Editar Perfil</h2>
 
-      <div className="avatar-wrapper" {...getRootProps()}>
+      <div className={`avatar-wrapper ${isDragActive ? 'drag-active' : ''}`} {...getRootProps()}>
         <input {...getInputProps()} />
         <img
           src={formData.user.avatar || avatarPlaceholder}
@@ -135,12 +178,22 @@ const Profile = () => {
           style={{ cursor: "pointer" }}
         />
         <div className="avatar-actions">
-          <Pencil className="icon-button" onClick={open} />
+          <Pencil className="icon-button" onClick={open} title="Alterar foto" />
           {formData.user.avatar && (
-            <Trash2 className="icon-button danger" onClick={handleRemovePhoto} />
+            <Trash2 className="icon-button danger" onClick={handleRemovePhoto} title="Remover foto" />
           )}
         </div>
+        {isDragActive && (
+          <div className="drag-overlay">
+            <p>Solte a imagem aqui...</p>
+          </div>
+        )}
       </div>
+      <p className="upload-hint">
+        Clique no ícone de lápis ou arraste uma imagem aqui para alterar sua foto de perfil
+        <br />
+        <small>Formatos aceitos: JPG, PNG, GIF, WebP (máximo 5MB)</small>
+      </p>
 
       <form onSubmit={handleSubmit} className="profile-form">
         <label>Nome</label>

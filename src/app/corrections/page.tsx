@@ -72,7 +72,11 @@ const AnswersPage = () => {
       Tentativa de {attempt.user.name} em{" "}
       {format(new Date(attempt.attempt_date), "dd/MM/yyyy HH:mm")}
     </h4>
-    <p><strong>Nota final:</strong> {attempt.final_grade ?? "-"}</p>
+    <p><strong>Nota final:</strong> {
+      attempt.final_grade != null && !isNaN(Number(attempt.final_grade)) 
+        ? Number(attempt.final_grade).toFixed(2) 
+        : "-"
+    }</p>
 
     {attempt.answers.length === 0 ? (
       <p>Nenhuma resposta disponível para esta tentativa.</p>
@@ -89,19 +93,44 @@ const AnswersPage = () => {
           <div key={answer.id} className="answer-row">
             <span>{answer.question.statement}</span>
             <span>{answer.student_answer || "-"}</span>
-            <span>
-              {(() => {
-                if (!answer.corrections || answer.corrections.length === 0) return "-";
-                const lastCorrection = answer.corrections.reduce((prev, current) =>
-                  new Date(prev.created_at) > new Date(current.created_at) ? prev : current
-                );
-                if (lastCorrection.grade == null) return "-";
-                const gradeNumber = typeof lastCorrection.grade === 'string' 
-                  ? parseFloat(lastCorrection.grade) 
-                  : lastCorrection.grade;
-                return !isNaN(gradeNumber) ? gradeNumber.toFixed(2) : "-";
-              })()}
-            </span>
+                          <span>
+                {(() => {
+                  try {
+                    if (!answer.corrections || answer.corrections.length === 0) return "-";
+                    
+                    const lastCorrection = answer.corrections.reduce((prev, current) =>
+                      new Date(prev.created_at) > new Date(current.created_at) ? prev : current
+                    );
+                    
+                    // Verificação mais rigorosa para valores nulos/undefined
+                    if (lastCorrection?.grade == null || lastCorrection?.grade === undefined) {
+                      return "-";
+                    }
+                    
+                    let gradeNumber: number;
+                    
+                    // Conversão segura baseada no tipo
+                    if (typeof lastCorrection.grade === 'string') {
+                      gradeNumber = parseFloat(lastCorrection.grade);
+                    } else if (typeof lastCorrection.grade === 'number') {
+                      gradeNumber = lastCorrection.grade;
+                    } else {
+                      // Fallback para tipos inesperados
+                      gradeNumber = Number(lastCorrection.grade);
+                    }
+                    
+                    // Verificação final se é um número válido
+                    if (isNaN(gradeNumber) || !isFinite(gradeNumber)) {
+                      return "-";
+                    }
+                    
+                    return gradeNumber.toFixed(2);
+                  } catch (error) {
+                    console.error('Erro ao processar nota:', error);
+                    return "-";
+                  }
+                })()}
+              </span>
 
             {(user?.role === 1 || user?.role === 2) ? (
               <Edit
