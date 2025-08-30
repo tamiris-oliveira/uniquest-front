@@ -210,14 +210,12 @@ const ApprovalsPage = () => {
                 <div className="user-actions">
                   <Button
                     onClick={() => handleApproval(pendingUser.id, 'approve')}
-                    className="approve-btn"
                   >
                     <Check size={16} />
                     Aprovar
                   </Button>
                   <Button
                     onClick={() => handleApproval(pendingUser.id, 'reject')}
-                    className="reject-btn"
                   >
                     <X size={16} />
                     Rejeitar
