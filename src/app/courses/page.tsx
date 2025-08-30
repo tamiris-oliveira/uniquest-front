@@ -73,7 +73,7 @@ const CoursesPage = () => {
     <div className="courses-container">
       <div className="courses-header">
         <h1>Cursos</h1>
-        {user?.role === 2 && (
+        {user?.role === 3 && (
           <Button onClick={handleCreateCourse}>
             Criar Curso
           </Button>

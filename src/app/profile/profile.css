@@ -128,3 +128,45 @@
   background: #1E40AF;
   color: #E0F2FE;
 }
+
+.teacher-request-section {
+  margin-top: 30px;
+  padding: 20px;
+  background: #F0F9FF;
+  border: 1px solid #BAE6FD;
+  border-radius: 8px;
+}
+
+.teacher-request-section h3 {
+  color: #1E40AF;
+  margin-bottom: 8px;
+  font-size: 18px;
+}
+
+.teacher-request-section p {
+  color: #374151;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.teacher-request-btn {
+  background: #1E40AF;
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.teacher-request-btn:hover:not(:disabled) {
+  background: #1D4ED8;
+  transform: translateY(-1px);
+}
+
+.teacher-request-btn:disabled {
+  background: #9CA3AF;
+  cursor: not-allowed;
+  transform: none;
+}

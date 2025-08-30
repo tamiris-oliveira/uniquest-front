@@ -23,6 +23,7 @@ const Profile = () => {
   }});
 
   const [loading, setLoading] = useState(true);
+  const [requestingTeacherRole, setRequestingTeacherRole] = useState(false);
 
   // Busca os dados do perfil no backend
   const getProfile = useCallback(async () => {
@@ -156,6 +157,23 @@ const Profile = () => {
     }
   };
 
+  const handleRequestTeacherRole = async () => {
+    try {
+      setRequestingTeacherRole(true);
+      await axios.post(
+        ApiRoutes.REQUEST_TEACHER_ROLE,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      toast.success("Solicitação para se tornar professor enviada com sucesso! Aguarde a aprovação.");
+    } catch (error) {
+      console.error('Erro ao solicitar role de professor:', error);
+      toast.error("Erro ao enviar solicitação. Tente novamente.");
+    } finally {
+      setRequestingTeacherRole(false);
+    }
+  };
+
   if (!token || loading) {
     return (
       <div className="profile-container">
@@ -234,6 +252,20 @@ const Profile = () => {
 
         <button type="submit">Salvar</button>
       </form>
+
+      {user?.role === 0 && (
+        <div className="teacher-request-section">
+          <h3>Solicitar Permissões de Professor</h3>
+          <p>Se você é um educador e gostaria de criar simulados e questões, solicite permissões de professor.</p>
+          <button 
+            onClick={handleRequestTeacherRole}
+            disabled={requestingTeacherRole}
+            className="teacher-request-btn"
+          >
+            {requestingTeacherRole ? "Enviando..." : "Solicitar Permissões de Professor"}
+          </button>
+        </div>
+      )}
     </div>
   );
 };

@@ -45,7 +45,7 @@ const CreateEditCourseContent = () => {
 
   useEffect(() => {
     // Verificar se o usuário tem permissão
-    if (user && user.role !== 2) {
+    if (user && user.role !== 3) {
       toast.error("Acesso negado. Apenas superadmins podem gerenciar cursos.");
       router.push("/courses");
       return;

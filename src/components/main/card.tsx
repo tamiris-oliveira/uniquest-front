@@ -102,7 +102,7 @@ const Card = ({ items, route, onEdit, onDelete, linkOnClick = true }: CardProps)
   return (
     <div className="card-group">
       {renderItems.map((item, index) => {
-        const isAdmin = user?.role === 1 || user?.role === 2;
+        const isAdmin = user?.role === 1 || user?.role === 2 || user?.role === 3;
         const clickable = route === "simulations" ? !item.deadlinePassed && !isAdmin : true;
 
         const cardContent = (

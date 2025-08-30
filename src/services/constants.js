@@ -8,6 +8,12 @@ export const ApiRoutes = {
   USERS: `${BASE_URL}/users`,
   USER: (id) => `${BASE_URL}/users/${id}`,
   PROFILE: `${BASE_URL}/profile`,
+  
+  // --- Aprovação de Usuários ---
+  USER_APPROVALS: `${BASE_URL}/user_approvals`,
+  USER_APPROVE: (id) => `${BASE_URL}/user_approvals/${id}/approve`,
+  USER_REJECT: (id) => `${BASE_URL}/user_approvals/${id}/reject`,
+  REQUEST_TEACHER_ROLE: `${BASE_URL}/user_approvals/request_teacher_role`,
 
   // --- Turmas (Groups) ---
   GROUPS: `${BASE_URL}/groups`,
