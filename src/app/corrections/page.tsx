@@ -95,7 +95,11 @@ const AnswersPage = () => {
                 const lastCorrection = answer.corrections.reduce((prev, current) =>
                   new Date(prev.created_at) > new Date(current.created_at) ? prev : current
                 );
-                return lastCorrection.grade != null ? lastCorrection.grade.toFixed(2) : "-";
+                if (lastCorrection.grade == null) return "-";
+                const gradeNumber = typeof lastCorrection.grade === 'string' 
+                  ? parseFloat(lastCorrection.grade) 
+                  : lastCorrection.grade;
+                return !isNaN(gradeNumber) ? gradeNumber.toFixed(2) : "-";
               })()}
             </span>
 

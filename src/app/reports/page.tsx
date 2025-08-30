@@ -208,7 +208,10 @@ const ReportsPage = () => {
                     labels: reportTables.ranking.map(r => r.name),
                     datasets: [{
                       label: "Nota Final",
-                      data: reportTables.ranking.map(r => r.grade),
+                      data: reportTables.ranking.map(r => {
+                        const grade = typeof r.grade === 'string' ? parseFloat(r.grade) : r.grade;
+                        return !isNaN(grade) ? grade : 0;
+                      }),
                       backgroundColor: '#3f51b5'
                     }]
                   }} 
