@@ -7,7 +7,6 @@ import Link from 'next/link';
 import {
   BookOpen,
   Users,
-  ClipboardList,
   BarChart2,
   Settings,
   Bell,
@@ -87,9 +86,8 @@ const AdminDashboard: React.FC<DashboardProps> = ({ user }) => {
         <DashboardCard title="Gerenciar Turmas" description="Crie turmas, adicione alunos e atribua simulados." href="/groups" icon={Users} color="bg-purple" />
         <DashboardCard title="Corrigir Respostas" description="Acesse a fila de respostas discursivas para correção." href="/corrections" icon={CheckSquare} color="bg-green" />
         <DashboardCard title="Relatórios de Desempenho" description="Analise o desempenho de turmas e simulados." href="/reports" icon={BarChart2} color="bg-yellow" />
-        {user?.role === 3 && (
-          <DashboardCard title="Aprovação de Usuários" description="Gerencie solicitações de cadastro de novos usuários." href="/approvals" icon={Settings} color="bg-red" />
-        )}
+        <DashboardCard title="Aprovação de Usuários" description="Gerencie solicitações de cadastro de novos usuários." href="/approvals" icon={Settings} color="bg-red" />
+
       </div>
     </div>
   );
