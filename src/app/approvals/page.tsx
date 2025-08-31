@@ -28,7 +28,7 @@ const ApprovalsPage = () => {
   const [filter, setFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('pending');
 
   useEffect(() => {
-    if (token && user?.role === 3) {
+    if (token && user?.role === 3 || user?.role === 2) {
       fetchPendingUsers();
     }
   }, [token, user]);
