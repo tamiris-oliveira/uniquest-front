@@ -109,7 +109,7 @@ const ApprovalsPage = () => {
     return roles[role as keyof typeof roles] || 'Desconhecido';
   };
 
-  if (user?.role !== 3) {
+  if (user?.role !== 3 && user?.role !== 2) {
     return (
       <div className="approvals-container">
         <div className="access-denied">
