@@ -33,6 +33,9 @@ const ApprovalsPage = () => {
   const [pendingUsers, setPendingUsers] = useState<PendingUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('pending');
+  const [showRoleModal, setShowRoleModal] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<PendingUser | null>(null);
+  const [selectedRole, setSelectedRole] = useState<number>(0);
 
   useEffect(() => {
     if (token && user?.role === 3 || user?.role === 2) {
@@ -58,15 +61,31 @@ const ApprovalsPage = () => {
     }
   };
 
-  const handleApproval = async (userId: string | number, action: 'approve' | 'reject') => {
+  const handleOpenRoleModal = (pendingUser: PendingUser) => {
+    setSelectedUser(pendingUser);
+    setSelectedRole(0); // Default para estudante
+    setShowRoleModal(true);
+  };
+
+  const handleCloseRoleModal = () => {
+    setShowRoleModal(false);
+    setSelectedUser(null);
+    setSelectedRole(0);
+  };
+
+  const handleApproval = async (userId: string | number, action: 'approve' | 'reject', role?: number) => {
     try {
       const endpoint = action === 'approve' 
         ? ApiRoutes.USER_APPROVE(userId)
         : ApiRoutes.USER_REJECT(userId);
+
+      const payload = action === 'approve' && role !== undefined 
+        ? { role } 
+        : {};
         
       await axios.post(
         endpoint,
-        {},
+        payload,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       
@@ -76,11 +95,22 @@ const ApprovalsPage = () => {
           : "Usuário rejeitado com sucesso!"
       );
       
+      // Fechar modal se estiver aberto
+      if (showRoleModal) {
+        handleCloseRoleModal();
+      }
+      
       // Atualizar a lista
       fetchPendingUsers();
     } catch (error) {
       console.error(`Erro ao ${action === 'approve' ? 'aprovar' : 'rejeitar'} usuário:`, error);
       toast.error(`Erro ao ${action === 'approve' ? 'aprovar' : 'rejeitar'} usuário.`);
+    }
+  };
+
+  const handleConfirmApproval = () => {
+    if (selectedUser) {
+      handleApproval(selectedUser.id, 'approve', selectedRole);
     }
   };
 
@@ -221,23 +251,90 @@ const ApprovalsPage = () => {
               </div>
 
               {pendingUser.approval_status === 'pending' && (
-                <div className="user-actions">
-                  <Button
-                    onClick={() => handleApproval(pendingUser.id, 'approve')}
+                <div className="user-actions-icons">
+                  <button
+                    className="action-icon approve-icon"
+                    onClick={() => handleOpenRoleModal(pendingUser)}
+                    title="Aprovar usuário"
                   >
-                    <Check size={16} />
-                    Aprovar
-                  </Button>
-                  <Button
+                    <Check size={18} />
+                  </button>
+                  <button
+                    className="action-icon reject-icon"
                     onClick={() => handleApproval(pendingUser.id, 'reject')}
+                    title="Rejeitar usuário"
                   >
-                    <X size={16} />
-                    Rejeitar
-                  </Button>
+                    <X size={18} />
+                  </button>
                 </div>
               )}
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Modal para seleção de role */}
+      {showRoleModal && selectedUser && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h3>Aprovar Usuário</h3>
+              <button 
+                className="close-button"
+                onClick={handleCloseRoleModal}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="modal-body">
+              <div className="user-info-modal">
+                <p><strong>Nome:</strong> {selectedUser.name}</p>
+                <p><strong>Email:</strong> {selectedUser.email}</p>
+                <p><strong>Curso:</strong> {selectedUser.course?.name}</p>
+              </div>
+
+              <div className="role-selection">
+                <label htmlFor="role-select">Selecione o papel do usuário:</label>
+                <select
+                  id="role-select"
+                  value={selectedRole}
+                  onChange={(e) => setSelectedRole(Number(e.target.value))}
+                >
+                  <option value={0}>Estudante</option>
+                  <option value={1}>Professor</option>
+                  <option value={2}>Admin</option>
+                </select>
+                
+                <div className="role-description">
+                  {selectedRole === 0 && (
+                    <p>Estudante: Pode participar de simulações e ver relatórios básicos.</p>
+                  )}
+                  {selectedRole === 1 && (
+                    <p>Professor: Pode criar questões, corrigir respostas e ver relatórios detalhados.</p>
+                  )}
+                  {selectedRole === 2 && (
+                    <p>Admin: Pode gerenciar cursos, grupos, simulações e usuários do curso.</p>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="modal-actions">
+              <button 
+                className="cancel-button"
+                onClick={handleCloseRoleModal}
+              >
+                Cancelar
+              </button>
+              <button 
+                className="approve-button"
+                onClick={handleConfirmApproval}
+              >
+                Aprovar como {selectedRole === 0 ? 'Estudante' : selectedRole === 1 ? 'Professor' : 'Admin'}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

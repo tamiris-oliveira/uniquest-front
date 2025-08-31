@@ -19,6 +19,7 @@ interface User {
   created_at?: string;
   course?: Course;
   course_id?: string | number;
+  approval_status?: string;
 }
 
 interface AuthContextType {

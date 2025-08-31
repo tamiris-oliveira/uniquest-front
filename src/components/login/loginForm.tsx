@@ -31,7 +31,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ type }) => {
     password: "",
     confirmPassword: "",
     course_id: "",
-    role: "0", // 0 = student, 1 = teacher
   });
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(false);
@@ -109,12 +108,12 @@ const LoginForm: React.FC<LoginFormProps> = ({ type }) => {
           email: formData.email,
           password: formData.password,
           course_id: realCourseId,
-          role: parseInt(formData.role),
+          role: 0, // Todos os novos usuários começam como estudantes
         },
       };
       
       await axios.post(ApiRoutes.USERS, payload);
-      toast.success("Cadastro realizado! Redirecionando...");
+      toast.success("Cadastro realizado! Aguarde a aprovação dos administradores para acessar o sistema.");
       router.push("/login");
     } catch (error: unknown) {
       console.error("Erro no cadastro:", error);
@@ -189,17 +188,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ type }) => {
                     placeholder="Digite seu email"
                   />
                   
-                  <label htmlFor="role">Tipo de Usuário</label>
-                  <select
-                    id="role"
-                    value={formData.role}
-                    onChange={handleChange}
-                    required
-                  >
-                    <option value="0">Estudante</option>
-                    <option value="1">Professor</option>
-                  </select>
-                  
+
                   <label htmlFor="course_id">Curso</label>
                   <select
                     id="course_id"

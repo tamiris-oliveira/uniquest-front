@@ -182,41 +182,44 @@
   min-width: 120px;
 }
 
-.user-actions {
+.user-actions-icons {
   display: flex;
-  gap: 12px;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 12px;
 }
 
-.user-actions button {
-  flex: 1;
+.action-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  padding: 10px 16px;
+  width: 36px;
+  height: 36px;
   border: none;
-  border-radius: 6px;
-  font-weight: 600;
+  border-radius: 50%;
   cursor: pointer;
   transition: all 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.approve-btn {
-  background: #10B981 !important;
-  color: white !important;
+.approve-icon {
+  background: #10B981;
+  color: white;
 }
 
-.approve-btn:hover {
-  background: #059669 !important;
+.approve-icon:hover {
+  background: #059669;
+  transform: scale(1.1);
 }
 
-.reject-btn {
-  background: #EF4444 !important;
-  color: white !important;
+.reject-icon {
+  background: #EF4444;
+  color: white;
 }
 
-.reject-btn:hover {
-  background: #DC2626 !important;
+.reject-icon:hover {
+  background: #DC2626;
+  transform: scale(1.1);
 }
 
 /* Responsividade */
@@ -238,8 +241,14 @@
     font-size: 14px;
   }
   
-  .user-actions {
-    flex-direction: column;
+  .user-actions-icons {
+    justify-content: center;
+    gap: 12px;
+  }
+  
+  .action-icon {
+    width: 40px;
+    height: 40px;
   }
   
   .detail-item {
@@ -250,4 +259,180 @@
   .detail-item strong {
     min-width: auto;
   }
+
+  .modal-content {
+    width: 95%;
+    max-width: none;
+    margin: 10px;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .cancel-button,
+  .approve-button {
+    width: 100%;
+  }
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 24px 0 24px;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 24px;
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: #1f2937;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.close-button:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.modal-body {
+  padding: 0 24px 24px 24px;
+}
+
+.user-info-modal {
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.user-info-modal p {
+  margin: 8px 0;
+  color: #4b5563;
+  font-size: 14px;
+}
+
+.user-info-modal strong {
+  color: #1f2937;
+  font-weight: 600;
+}
+
+.role-selection {
+  margin-bottom: 24px;
+}
+
+.role-selection label {
+  display: block;
+  margin-bottom: 8px;
+  color: #374151;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.role-selection select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #374151;
+  background: white;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.role-selection select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.role-description {
+  margin-top: 12px;
+  padding: 12px;
+  background: #eff6ff;
+  border: 1px solid #dbeafe;
+  border-radius: 6px;
+}
+
+.role-description p {
+  margin: 0;
+  color: #1e40af;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  padding: 0 24px 24px 24px;
+}
+
+.cancel-button,
+.approve-button {
+  flex: 1;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cancel-button {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.cancel-button:hover {
+  background: #e5e7eb;
+}
+
+.approve-button {
+  background: #10b981;
+  color: white;
+}
+
+.approve-button:hover {
+  background: #059669;
+  transform: translateY(-1px);
 }
