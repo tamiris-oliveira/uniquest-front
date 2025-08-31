@@ -11,14 +11,21 @@ import { Check, X, Eye, UserCheck, UserX } from "lucide-react";
 import Button from "@/components/main/button";
 import "./approvals.css";
 
-interface PendingUser extends User {
+interface PendingUser {
+  id: string | number;
+  name: string;
+  email: string;
+  role: number;
+  role_name: string;
+  approval_status: 'pending' | 'approved' | 'rejected';
   course?: {
     id: string | number;
     name: string;
     code: string;
   };
   created_at: string;
-  status: 'pending' | 'approved' | 'rejected';
+  approved_at: string | null;
+  approved_by: string | null;
 }
 
 const ApprovalsPage = () => {
@@ -79,7 +86,7 @@ const ApprovalsPage = () => {
 
   const filteredUsers = pendingUsers.filter(user => {
     if (filter === 'all') return true;
-    return user.status === filter;
+    return user.approval_status === filter;
   });
 
   const getStatusBadge = (status: string) => {
@@ -142,21 +149,21 @@ const ApprovalsPage = () => {
             onClick={() => setFilter('pending')}
           >
             <UserCheck size={16} />
-            Pendentes ({pendingUsers.filter(u => u.status === 'pending').length})
+            Pendentes ({pendingUsers.filter(u => u.approval_status === 'pending').length})
           </button>
           <button
             className={`filter-btn ${filter === 'approved' ? 'active' : ''}`}
             onClick={() => setFilter('approved')}
           >
             <Check size={16} />
-            Aprovados ({pendingUsers.filter(u => u.status === 'approved').length})
+            Aprovados ({pendingUsers.filter(u => u.approval_status === 'approved').length})
           </button>
           <button
             className={`filter-btn ${filter === 'rejected' ? 'active' : ''}`}
             onClick={() => setFilter('rejected')}
           >
             <X size={16} />
-            Rejeitados ({pendingUsers.filter(u => u.status === 'rejected').length})
+            Rejeitados ({pendingUsers.filter(u => u.approval_status === 'rejected').length})
           </button>
           <button
             className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
@@ -188,12 +195,12 @@ const ApprovalsPage = () => {
                   <h3>{pendingUser.name}</h3>
                   <p className="user-email">{pendingUser.email}</p>
                 </div>
-                {getStatusBadge(pendingUser.status)}
+                {getStatusBadge(pendingUser.approval_status)}
               </div>
 
               <div className="user-details">
                 <div className="detail-item">
-                  <strong>Tipo:</strong> {getRoleText(pendingUser.role)}
+                  <strong>Tipo:</strong> {pendingUser.role_name}
                 </div>
                 <div className="detail-item">
                   <strong>Curso:</strong> {pendingUser.course?.name || 'Não informado'}
@@ -205,9 +212,15 @@ const ApprovalsPage = () => {
                   <strong>Data de Cadastro:</strong>{' '}
                   {format(new Date(pendingUser.created_at), "dd/MM/yyyy HH:mm")}
                 </div>
+                {pendingUser.approved_at && (
+                  <div className="detail-item">
+                    <strong>Data de Aprovação:</strong>{' '}
+                    {format(new Date(pendingUser.approved_at), "dd/MM/yyyy HH:mm")}
+                  </div>
+                )}
               </div>
 
-              {pendingUser.status === 'pending' && (
+              {pendingUser.approval_status === 'pending' && (
                 <div className="user-actions">
                   <Button
                     onClick={() => handleApproval(pendingUser.id, 'approve')}
