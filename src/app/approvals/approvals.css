@@ -123,13 +123,13 @@
   margin-bottom: 16px;
 }
 
-.user-info h3 {
+.user-info-approval h3 {
   margin: 0 0 4px 0;
   color: #1F2937;
   font-size: 18px;
 }
 
-.user-email {
+.user-info-approval email {
   margin: 0;
   color: #6B7280;
   font-size: 14px;

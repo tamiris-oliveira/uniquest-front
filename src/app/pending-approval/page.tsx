@@ -55,7 +55,7 @@ const PendingApproval = () => {
           }
         </h1>
 
-        <div className="user-info">
+        <div className="user-info-approval">
           <p><strong>Nome:</strong> {user.name}</p>
           <p><strong>Email:</strong> {user.email}</p>
           <p><strong>Curso:</strong> {user.course?.name || 'N/A'}</p>

@@ -221,7 +221,7 @@ const ApprovalsPage = () => {
           {filteredUsers.map((pendingUser) => (
             <div key={pendingUser.id} className="user-card">
               <div className="user-header">
-                <div className="user-info">
+                <div className="user-info-approval">
                   <h3>{pendingUser.name}</h3>
                   <p className="user-email">{pendingUser.email}</p>
                 </div>

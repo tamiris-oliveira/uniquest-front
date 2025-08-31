@@ -58,7 +58,7 @@
   font-weight: 700;
 }
 
-.user-info {
+.user-info-approval {
   background: #f8fafc;
   border-radius: 12px;
   padding: 20px;
@@ -66,13 +66,13 @@
   text-align: left;
 }
 
-.user-info p {
+.user-info-approval p {
   margin: 8px 0;
   color: #4b5563;
   font-size: 16px;
 }
 
-.user-info strong {
+.user-info-approval strong {
   color: #1f2937;
   font-weight: 600;
 }
@@ -203,7 +203,7 @@
     font-size: 48px;
   }
 
-  .user-info,
+  .user-info-approval,
   .info-box,
   .contact-info {
     padding: 16px;
