@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import ApiRoutes from "@/services/constants";
 import { Answer, User } from "@/types/types";
 import { Edit , Eye} from "lucide-react";
+import Spinner from "@/components/main/spinner";
 import "./correction.css";
 
 interface Attempt {
@@ -29,6 +30,7 @@ const AnswersPage = () => {
   const { token, user } = useAuth();
   const router = useRouter();
   const [simulations, setSimulations] = useState<SimulationWithAttempts[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (token) fetchSimulationsWithAttempts();
@@ -36,6 +38,7 @@ const AnswersPage = () => {
 
   const fetchSimulationsWithAttempts = async () => {
     try {
+      setLoading(true);
       const { data } = await axios.get<SimulationWithAttempts[]>(
         `${ApiRoutes.SIMULATIONS}/with_attempts_answers`,
         {
@@ -45,12 +48,23 @@ const AnswersPage = () => {
       setSimulations(data);
     } catch (err) {
       toast.error("Erro ao carregar respostas.");
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleCorrection = (answerId: string | number) => {
     router.push(`/corrections/createEditCorrection?answer_id=${answerId}`);
   };
+
+  if (loading) {
+    return (
+      <div className="create-group-container">
+        <h2 style={{ marginBottom: "1rem" }}>Correções</h2>
+        <Spinner />
+      </div>
+    );
+  }
 
   return (
     <div className="create-group-container">
