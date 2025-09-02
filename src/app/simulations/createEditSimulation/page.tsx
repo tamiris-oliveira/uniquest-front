@@ -262,14 +262,14 @@ const handleSaveSimulation = async (questionIds: (string | number)[]) => {
 )}
 
 
-      {questions.map((question) => (
+      {(questions || []).map((question) => (
           <div key={question.id} className="question-card">
             <p><strong>Tipo:</strong> {question.question_type}</p>
             <p><strong>Enunciado:</strong> {question.statement}</p>
             {question.alternatives && question.alternatives.length > 0 && (
               <div className="alternatives-container">
                 <strong>Alternativas:</strong>
-                {question.alternatives.map((alt: Alternative) => (
+                {(question.alternatives || []).map((alt: Alternative) => (
                   <div
                     key={alt.id}
                     className={`alternative ${alt.correct ? "correct" : ""}`}

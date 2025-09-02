@@ -40,7 +40,7 @@ const FilterGroup = ({ groups, onClickOutside }: FilterGroupProps) => {
     };
   }, [filters, onClickOutside, filtersChanged]);
 
-  const fields = Array.from(new Set(groups.flatMap((group) => Object.keys(group))));
+  const fields = Array.from(new Set((groups || []).flatMap((group) => Object.keys(group))));
 
   const handleSelectChange = (field: string, value: string) => {
     setFilters((prevFilters) => ({
@@ -71,7 +71,7 @@ const FilterGroup = ({ groups, onClickOutside }: FilterGroupProps) => {
             onChange={(e) => handleSelectChange(field, e.target.value)}
           >
             <option value="">Selecione {field}</option>
-            {Array.from(new Set(groups.map((group) => group[field]))).map((value, index) => (
+            {Array.from(new Set((groups || []).map((group) => group[field]))).map((value, index) => (
               <option key={index} value={value}>
                 {value}
               </option>

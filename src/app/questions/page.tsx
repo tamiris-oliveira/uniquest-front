@@ -86,10 +86,10 @@ const QuestionsPage: React.FC = () => {
       </Link>
     </div>
 
-    {Object.entries(questionsBySubject).map(([subject, questions]) => (
+    {Object.entries(questionsBySubject || {}).map(([subject, questions]) => (
       <div key={subject} style={{ marginBottom: 32 }}>
         <h3 style={{ marginBottom: 8, color: "#1E3A8A" }}>{subject}</h3>
-        {questions.map((question) => (
+        {(questions || []).map((question) => (
           <div key={question.id} className="question-card">
             {user?.id === question.user.id && (
               <div className="actions-container">
@@ -112,7 +112,7 @@ const QuestionsPage: React.FC = () => {
             {question.question_type=="Objetiva" && question.alternatives && question.alternatives.length > 0 && (
               <div className="alternatives-container">
                 <strong>Alternativas:</strong>
-                {question.alternatives.map((alt: Alternative) => (
+                {(question.alternatives || []).map((alt: Alternative) => (
                   <div
                     key={alt.id}
                     className={`alternative ${alt.correct ? "correct" : ""}`}

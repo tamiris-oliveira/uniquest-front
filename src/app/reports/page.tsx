@@ -205,10 +205,10 @@ const ReportsPage = () => {
               <div className="chart-section">
                 <Bar 
                   data={{
-                    labels: reportTables.ranking.map(r => r.name),
+                    labels: (reportTables?.ranking || []).map(r => r.name),
                     datasets: [{
                       label: "Nota Final",
-                      data: reportTables.ranking.map(r => {
+                      data: (reportTables?.ranking || []).map(r => {
                         const grade = typeof r.grade === 'string' ? parseFloat(r.grade) : r.grade;
                         return !isNaN(grade) ? grade : 0;
                       }),

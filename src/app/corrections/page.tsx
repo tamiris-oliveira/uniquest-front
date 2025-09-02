@@ -56,17 +56,17 @@ const AnswersPage = () => {
     <div className="create-group-container">
       <h2 style={{ marginBottom: "1rem" }}>Correções</h2>
 
-      {simulations.length === 0 && <p>Nenhuma correção encontrada.</p>}
+      {(!simulations || simulations.length === 0) && <p>Nenhuma correção encontrada.</p>}
 
-      {simulations.map((simulation) => (
+      {simulations?.map((simulation) => (
         <div key={simulation.id} className="simulation-group">
           <h3>{simulation.title}</h3>
 
-          {simulation.attempts.length === 0 && (
+          {(!simulation.attempts || simulation.attempts.length === 0) && (
             <p>Nenhuma tentativa encontrada para este simulado.</p>
           )}
 
-{simulation.attempts.map((attempt) => (
+{simulation.attempts?.map((attempt) => (
   <div key={attempt.id} className="attempt-group">
     <h4>
       Tentativa de {attempt.user.name} em{" "}
@@ -78,7 +78,7 @@ const AnswersPage = () => {
         : "-"
     }</p>
 
-    {attempt.answers.length === 0 ? (
+    {(!attempt.answers || attempt.answers.length === 0) ? (
       <p>Nenhuma resposta disponível para esta tentativa.</p>
     ) : (
       <div className="answer-table">
@@ -89,7 +89,7 @@ const AnswersPage = () => {
           {(user?.role === 1 || user?.role === 2 || user?.role === 3) && (<span>Corrigir</span>)}
         </div>
 
-        {attempt.answers.map((answer) => (
+        {attempt.answers?.map((answer) => (
           <div key={answer.id} className="answer-row">
             <span>{answer.question.statement}</span>
             <span>{answer.student_answer || "-"}</span>

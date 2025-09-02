@@ -40,7 +40,7 @@ const Card = ({ items, route, onEdit, onDelete, linkOnClick = true }: CardProps)
 
   useEffect(() => {
     if (route === "simulations") {
-      const enrichedItems = items.map((item) => {
+      const enrichedItems = (items || []).map((item) => {
         const deadlineRaw = item["Data de Vencimento"];
         const passed = isDeadlinePassed(deadlineRaw);
         const deadline = deadlineRaw ? parseDate(deadlineRaw) : null;
@@ -58,7 +58,7 @@ const Card = ({ items, route, onEdit, onDelete, linkOnClick = true }: CardProps)
 
       setRenderItems([...valid, ...expired]);
     } else {
-      setRenderItems(items);
+      setRenderItems(items || []);
     }
   }, [items, route]);
 
@@ -76,7 +76,7 @@ const Card = ({ items, route, onEdit, onDelete, linkOnClick = true }: CardProps)
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      const userAttempts = attempts.length;
+      const userAttempts = (attempts || []).length;
       const maxAttempts = simulation.max_attempts || 1;
 
       if (userAttempts >= maxAttempts) {
@@ -101,7 +101,7 @@ const Card = ({ items, route, onEdit, onDelete, linkOnClick = true }: CardProps)
 
   return (
     <div className="card-group">
-      {renderItems.map((item, index) => {
+      {(renderItems || []).map((item, index) => {
         const isAdmin = user?.role === 1 || user?.role === 2 || user?.role === 3;
         const clickable = route === "simulations" ? !item.deadlinePassed && !isAdmin : true;
 
